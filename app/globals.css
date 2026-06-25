@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7f4f0;
+  color: #4a433d;
+}
+
+@layer components {
+  /* Tracked, uppercase "eyebrow" label used above headlines */
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-widest2 text-ochre;
+  }
+
+  /* GPS-coordinate style eyebrow — the page's signature detail */
+  .coord {
+    @apply text-xs font-medium uppercase tracking-widest2 text-acacia;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-pad {
+    @apply px-6 md:px-12 lg:px-20;
+  }
+
+  /* Sliding-fill button: a dark panel grows in from the left on hover,
+     like a progress bar, instead of a flat color swap. */
+  .btn-ochre {
+    @apply relative isolate inline-flex items-center justify-center overflow-hidden bg-ochre text-linen text-xs font-semibold uppercase tracking-widest2 px-8 py-4;
+  }
+  .btn-ochre::before {
+    content: "";
+    @apply absolute inset-0 -z-10 origin-left scale-x-0 bg-umber transition-transform duration-500 ease-out;
+  }
+  .btn-ochre:hover::before,
+  .btn-ochre:focus-visible::before {
+    @apply scale-x-100;
+  }
+  .btn-ochre:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-linen;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center border border-linen/70 text-linen text-xs font-semibold uppercase tracking-widest2 px-8 py-4 transition-colors duration-300 hover:bg-linen hover:text-umber;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
