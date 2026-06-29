@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { trustedBy } from "@/lib/data";
 import { useState, useRef, useEffect } from "react";
 import { PhoneCall } from "lucide-react";

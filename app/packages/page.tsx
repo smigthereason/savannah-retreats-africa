@@ -1,5 +1,3 @@
-import Navbar from "@/components/Landing-Page/Navbar";
-import Footer from "@/components/Landing-Page/Footer";
 import CTABooking from "@/components/Landing-Page/CTABooking";
 import PackagesHero from "@/components/Packages/PackagesHero";
 import PackageBrowser from "@/components/Packages/PackageBrowser";
@@ -24,13 +22,11 @@ export default function PackagesPage() {
         backgroundPosition: "center",
       }}
     >
-      <Navbar />
       <PackagesHero />
       <PackageBrowser />
       <PricingTiers />
       <PackageFAQ />
       <CTABooking />
-      <Footer />
     </main>
   );
 }

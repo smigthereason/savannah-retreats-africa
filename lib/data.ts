@@ -17,7 +17,8 @@ export const heroSlides = [
     eyebrow: "The Ultimate Safari Experience",
     headline: "Where the Wild\nBecomes Home",
     image:
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?q=80&w=2400&auto=format&fit=crop",
+    // Hot air balloon drifting over zebra herds on the Mara plains — classic, instantly recognizable Mara imagery
   },
   {
     coord: "S 2.6527° E 37.2606°",
@@ -25,7 +26,9 @@ export const heroSlides = [
     eyebrow: "Eight Days Among Giants",
     headline: "Elephants, at the\nFoot of Kilimanjaro",
     image:
-      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2400&auto=format&fit=crop",
+      // "https://images.unsplash.com/photo-1559494388-a5bbc635ed2b?q=80&w=2400&auto=format&fit=crop",
+      "https://i.pinimg.com/1200x/f4/ca/1c/f4ca1cafea03bb1978af03d6ec0e0992.jpg",
+    // Elephant herd with Mount Kilimanjaro in the background, Amboseli — matches the headline literally
   },
   {
     coord: "S 4.3167° E 39.5667°",
@@ -33,7 +36,8 @@ export const heroSlides = [
     eyebrow: "Safari Meets Shoreline",
     headline: "End Your Journey\nOn the Coast",
     image:
-      "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=2400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1706012955757-6c2048c32668?q=80&w=2400&auto=format&fit=crop",
+    // White sand, beach loungers, and thatched huts shot at Diani Beach on the Kenyan coast
   },
 ];
 
@@ -74,8 +78,7 @@ export const experiences = [
     eyebrow: "Aloft",
     title: "Mount Kenya Lodge",
     body: "A highland counterpoint to the savanna heat — forest trails, cold rivers, and a lodge fire every evening.",
-    image:
-      "https://images.unsplash.com/photo-1516561423165-1b3d025306ce?q=80&w=1600&auto=format&fit=crop",
+    image: "https://www.south-african-lodges.com/media/Aerial(2).jpg",
     flip: false,
   },
   {
@@ -106,14 +109,14 @@ export const journal = [
     category: "Migration",
     title: "Best time to visit the Maasai Mara",
     image:
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1564101160531-4838e8a5f4e7?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     date: { month: "Dec", day: "04" },
     category: "Itineraries",
     title: "Beach and safari combo works",
     image:
-      "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?q=80&w=1600&auto=format&fit=crop",
   },
   {
     date: { month: "Dec", day: "06" },
@@ -123,25 +126,25 @@ export const journal = [
       "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "02" },
-    category: "Migration",
-    title: "Best time to visit the Maasai Mara",
+    date: { month: "Dec", day: "08" },
+    category: "Camps & Lodges",
+    title: "A night inside a private tented camp",
     image:
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1741850821150-58b56e0e6156?q=80&w=1600&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "04" },
-    category: "Itineraries",
-    title: "Beach and safari combo works",
+    date: { month: "Dec", day: "10" },
+    category: "Field Notes",
+    title: "Reading the savanna before your guide points it out",
     image:
-      "https://images.unsplash.com/photo-1535941339077-2dd1c7963098?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1757777598981-2a589811168d?q=80&w=1600&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "06" },
-    category: "First-Timers",
-    title: "What to pack for your first safari",
+    date: { month: "Dec", day: "12" },
+    category: "Destinations",
+    title: "Mount Kenya's forest lodges: safari at altitude",
     image:
-      "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1694964363999-964f056854ae?q=80&w=1600&auto=format&fit=crop",
   },
 ];
 
