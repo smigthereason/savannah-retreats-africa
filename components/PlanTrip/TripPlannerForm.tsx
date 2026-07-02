@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check } from "lucide-react";
+import { submitInquiry } from "@/lib/submitInquiry";
 
 const DESTINATIONS = [
   "Maasai Mara",
@@ -23,7 +24,17 @@ const TIERS = [
 export default function TripPlannerForm() {
   const [destinations, setDestinations] = useState<string[]>([]);
   const [tier, setTier] = useState<(typeof TIERS)[number]["value"] | null>(null);
+  const [dateStart, setDateStart] = useState("");
+  const [dateEnd, setDateEnd] = useState("");
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [notes, setNotes] = useState("");
+
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function toggleDestination(d: string) {
     setDestinations((prev) =>
@@ -31,10 +42,29 @@ export default function TripPlannerForm() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire to a real email/CRM endpoint — this just shows a confirmation state for now.
-    setSubmitted(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitInquiry({
+        type: "tripPlanner",
+        name,
+        email,
+        message: notes || undefined,
+        destinations,
+        tier: tier || undefined,
+        dateStart: dateStart || undefined,
+        dateEnd: dateEnd || undefined,
+        adults,
+        children,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -100,6 +130,8 @@ export default function TripPlannerForm() {
                 </span>
                 <input
                   type="date"
+                  value={dateStart}
+                  onChange={(e) => setDateStart(e.target.value)}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -109,6 +141,8 @@ export default function TripPlannerForm() {
                 </span>
                 <input
                   type="date"
+                  value={dateEnd}
+                  onChange={(e) => setDateEnd(e.target.value)}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -119,7 +153,8 @@ export default function TripPlannerForm() {
                 <input
                   type="number"
                   min={1}
-                  defaultValue={2}
+                  value={adults}
+                  onChange={(e) => setAdults(Number(e.target.value))}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -130,7 +165,8 @@ export default function TripPlannerForm() {
                 <input
                   type="number"
                   min={0}
-                  defaultValue={0}
+                  value={children}
+                  onChange={(e) => setChildren(Number(e.target.value))}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -179,6 +215,8 @@ export default function TripPlannerForm() {
                 <input
                   required
                   type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -189,6 +227,8 @@ export default function TripPlannerForm() {
                 <input
                   required
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
@@ -200,13 +240,17 @@ export default function TripPlannerForm() {
               </span>
               <textarea
                 rows={4}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
                 className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
               />
             </label>
           </div>
 
-          <button type="submit" className="btn-ochre mt-10 w-full">
-            Get My Itinerary
+          {error && <p className="mt-6 text-[13px] text-red-600">{error}</p>}
+
+          <button type="submit" disabled={submitting} className="btn-ochre mt-10 w-full disabled:opacity-60">
+            {submitting ? "Sending…" : "Get My Itinerary"}
           </button>
         </form>
       </div>

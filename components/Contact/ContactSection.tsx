@@ -6,6 +6,7 @@ import { Mail, MapPin, PhoneCall } from "lucide-react";
 import { footer } from "@/lib/data";
 import { packages } from "@/lib/packages-data";
 import { lodges } from "@/lib/lodges-data";
+import { submitInquiry } from "@/lib/submitInquiry";
 
 function useReference() {
   const searchParams = useSearchParams();
@@ -15,11 +16,11 @@ function useReference() {
   return useMemo(() => {
     if (packageSlug) {
       const pkg = packages.find((p) => p.slug === packageSlug);
-      if (pkg) return { type: "Package" as const, label: pkg.title };
+      if (pkg) return { type: "Package" as const, label: pkg.title, slug: pkg.slug };
     }
     if (lodgeSlug) {
       const lodge = lodges.find((l) => l.slug === lodgeSlug);
-      if (lodge) return { type: "Property" as const, label: lodge.name };
+      if (lodge) return { type: "Property" as const, label: lodge.name, slug: lodge.slug };
     }
     return null;
   }, [packageSlug, lodgeSlug]);
@@ -28,6 +29,12 @@ function useReference() {
 export default function ContactSection() {
   const reference = useReference();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -36,10 +43,27 @@ export default function ContactSection() {
     }
   }, [reference]);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire to a real email/CRM endpoint — this just shows a confirmation state for now.
-    setSubmitted(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitInquiry({
+        type: "contact",
+        name,
+        email,
+        phone: phone || undefined,
+        message,
+        reference: reference
+          ? { refType: reference.type, label: reference.label, slug: reference.slug }
+          : undefined,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -133,6 +157,8 @@ export default function ContactSection() {
                     <input
                       required
                       type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                     />
                   </label>
@@ -143,6 +169,8 @@ export default function ContactSection() {
                     <input
                       required
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                     />
                   </label>
@@ -154,6 +182,8 @@ export default function ContactSection() {
                   </span>
                   <input
                     type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                   />
                 </label>
@@ -171,8 +201,10 @@ export default function ContactSection() {
                   />
                 </label>
 
-                <button type="submit" className="btn-ochre w-full">
-                  Send Message
+                {error && <p className="text-[13px] text-red-600">{error}</p>}
+
+                <button type="submit" disabled={submitting} className="btn-ochre w-full disabled:opacity-60">
+                  {submitting ? "Sending…" : "Send Message"}
                 </button>
               </form>
             )}

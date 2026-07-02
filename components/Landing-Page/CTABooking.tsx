@@ -3,6 +3,7 @@
 import { trustedBy } from "@/lib/data";
 import { useState, useRef, useEffect } from "react";
 import { PhoneCall } from "lucide-react";
+import { submitInquiry } from "@/lib/submitInquiry";
 
 // ── Minimal inline calendar ──────────────────────────────────────────────────
 const MONTHS = [
@@ -166,6 +167,13 @@ export default function CTABooking() {
   const [calOpen, setCalOpen] = useState(false);
   const calRef = useRef<HTMLDivElement>(null);
 
+  const [email, setEmail] = useState("");
+  const [adults, setAdults] = useState("");
+  const [childrenCount, setChildrenCount] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleDateSelect = (d: Date) => {
     if (!dates.start || (dates.start && dates.end)) {
       setDates({ start: d, end: null });
@@ -198,6 +206,30 @@ export default function CTABooking() {
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
+
+  async function handleCheckAvailability() {
+    if (!email) {
+      setError("Enter your email so we can send availability.");
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitInquiry({
+        type: "booking",
+        email,
+        dateStart: dates.start ? dates.start.toISOString().slice(0, 10) : undefined,
+        dateEnd: dates.end ? dates.end.toISOString().slice(0, 10) : undefined,
+        adults: adults ? Number(adults) : undefined,
+        children: childrenCount ? Number(childrenCount) : undefined,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <section className="relative">
@@ -241,59 +273,90 @@ export default function CTABooking() {
                 Request a Booking
               </h2>
 
-              <div className="mt-8 space-y-4">
-                {/* Date range input + calendar */}
-                <div className="relative" ref={calRef}>
-                  <input
-                    type="text"
-                    readOnly
-                    onClick={() => setCalOpen((o) => !o)}
-                    value={formatRange()}
-                    placeholder="Travel dates"
-                    className="w-full border border-umber/15 bg-linen px-5 pr-12 py-4 text-sm text-ink placeholder:text-ink/50 outline-none focus:border-ochre cursor-pointer"
-                  />
-                  {/* calendar icon */}
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 text-base">
-                    📅
-                  </span>
-                  {calOpen && (
-                    <Calendar
-                      selected={dates}
-                      onSelect={handleDateSelect}
-                      onClose={() => setCalOpen(false)}
+              {submitted ? (
+                <p className="mt-8 text-[14px] leading-relaxed text-ink">
+                  Thanks — we've got your dates. A trip designer will email
+                  availability within 24 hours.
+                </p>
+              ) : (
+                <div className="mt-8 space-y-4">
+                  {/* Date range input + calendar */}
+                  <div className="relative" ref={calRef}>
+                    <input
+                      type="text"
+                      readOnly
+                      onClick={() => setCalOpen((o) => !o)}
+                      value={formatRange()}
+                      placeholder="Travel dates"
+                      className="w-full border border-umber/15 bg-linen px-5 pr-12 py-4 text-sm text-ink placeholder:text-ink/50 outline-none focus:border-ochre cursor-pointer"
                     />
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative">
-                    <select className="w-full appearance-none border border-umber/15 bg-linen pl-5 pr-10 py-4 text-sm text-ink outline-none focus:border-ochre">
-                      <option>Adults</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3+</option>
-                    </select>
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
-                      ▾
+                    {/* calendar icon */}
+                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 text-base">
+                      📅
                     </span>
+                    {calOpen && (
+                      <Calendar
+                        selected={dates}
+                        onSelect={handleDateSelect}
+                        onClose={() => setCalOpen(false)}
+                      />
+                    )}
                   </div>
-                  <div className="relative">
-                    <select className="w-full appearance-none border border-umber/15 bg-linen pl-5 pr-10 py-4 text-sm text-ink outline-none focus:border-ochre">
-                      <option>Children</option>
-                      <option>0</option>
-                      <option>1</option>
-                      <option>2+</option>
-                    </select>
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
-                      ▾
-                    </span>
-                  </div>
-                </div>
 
-                <button type="button" className="btn-ochre w-full">
-                  Check Availability
-                </button>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="relative">
+                      <select
+                        value={adults}
+                        onChange={(e) => setAdults(e.target.value)}
+                        className="w-full appearance-none border border-umber/15 bg-linen pl-5 pr-10 py-4 text-sm text-ink outline-none focus:border-ochre"
+                      >
+                        <option value="">Adults</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                      </select>
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
+                        ▾
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <select
+                        value={childrenCount}
+                        onChange={(e) => setChildrenCount(e.target.value)}
+                        className="w-full appearance-none border border-umber/15 bg-linen pl-5 pr-10 py-4 text-sm text-ink outline-none focus:border-ochre"
+                      >
+                        <option value="">Children</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2+</option>
+                      </select>
+                      <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
+                        ▾
+                      </span>
+                    </div>
+                  </div>
+
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email"
+                    className="w-full border border-umber/15 bg-linen px-5 py-4 text-sm text-ink placeholder:text-ink/50 outline-none focus:border-ochre"
+                  />
+
+                  {error && <p className="text-[12px] text-red-200">{error}</p>}
+
+                  <button
+                    type="button"
+                    disabled={submitting}
+                    onClick={handleCheckAvailability}
+                    className="btn-ochre w-full disabled:opacity-60"
+                  >
+                    {submitting ? "Sending…" : "Check Availability"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
