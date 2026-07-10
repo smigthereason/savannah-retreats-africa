@@ -1,0 +1,73 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+export default function AdminLoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Incorrect password");
+      }
+      const redirectTo = searchParams.get("from") || "/admin";
+      router.push(redirectTo);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <section className="bg-linen w-full min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-sm bg-sand px-8 py-10 md:px-10 shadow-2xl">
+        <span className="eyebrow">Admin</span>
+        <h1 className="mt-3 font-display text-3xl text-umber">Sign In</h1>
+        <p className="mt-3 text-[14px] text-ink/70">
+          Enter the admin password to view and manage inquiries.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <label className="block">
+            <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+              Password
+            </span>
+            <input
+              required
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
+            />
+          </label>
+
+          {error && <p className="text-[13px] text-red-600">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="btn-ochre w-full disabled:opacity-60"
+          >
+            {submitting ? "Signing in…" : "Sign In"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}

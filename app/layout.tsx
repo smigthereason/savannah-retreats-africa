@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Raleway } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Landing-Page/Navbar";
-import Footer from "@/components/Landing-Page/Footer";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -29,9 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${cormorant.variable} ${raleway.variable} font-sans`}>
-        <Navbar />
         <div className="min-h-screen overflow-hidden">{children}</div>
-        <Footer />
       </body>
     </html>
   );
