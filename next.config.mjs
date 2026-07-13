@@ -35,6 +35,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.scottdunn.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.tuko.co.ke",
+      },
     ],
   },
 };

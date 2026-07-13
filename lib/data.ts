@@ -6,7 +6,7 @@ export const navLinks = [
   { label: "About", href: "/about" },
   { label: "Safari Packages", href: "/packages" },
   { label: "Lodges & Camps", href: "/lodges" },
-  { label: "Journal", href: "/journal" },
+  { label: "Culture", href: "/culture" },
   { label: "Contact", href: "/contact" },
 ];
 

@@ -4,6 +4,11 @@ import { trustedBy } from "@/lib/data";
 import { useState, useRef, useEffect } from "react";
 import { PhoneCall } from "lucide-react";
 import { submitInquiry } from "@/lib/submitInquiry";
+import TravelerAgeDetails, {
+  emptyTravelerAgeDetails,
+  resizeChildrenAges,
+  type TravelerAgeDetailsValue,
+} from "@/components/shared/TravelerAgeDetails";
 
 // ── Minimal inline calendar ──────────────────────────────────────────────────
 const MONTHS = [
@@ -170,6 +175,21 @@ export default function CTABooking() {
   const [email, setEmail] = useState("");
   const [adults, setAdults] = useState("");
   const [childrenCount, setChildrenCount] = useState("");
+  const [ageDetails, setAgeDetails] = useState<TravelerAgeDetailsValue>(
+    emptyTravelerAgeDetails()
+  );
+  // "3+" / "2+" style select values — parseInt reads the leading number
+  const adultsNum = adults ? parseInt(adults, 10) : 0;
+  const childrenNum = childrenCount ? parseInt(childrenCount, 10) : 0;
+
+  function handleChildrenCountChange(v: string) {
+    setChildrenCount(v);
+    const n = v ? parseInt(v, 10) : 0;
+    setAgeDetails((prev) => ({
+      ...prev,
+      childrenAges: resizeChildrenAges(prev.childrenAges, n),
+    }));
+  }
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -220,8 +240,10 @@ export default function CTABooking() {
         email,
         dateStart: dates.start ? dates.start.toISOString().slice(0, 10) : undefined,
         dateEnd: dates.end ? dates.end.toISOString().slice(0, 10) : undefined,
-        adults: adults ? Number(adults) : undefined,
-        children: childrenCount ? Number(childrenCount) : undefined,
+        adults: adultsNum || undefined,
+        children: childrenNum || undefined,
+        childrenAges: childrenNum > 0 ? ageDetails.childrenAges : undefined,
+        seniorAdults: ageDetails.seniorAdults || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -322,7 +344,7 @@ export default function CTABooking() {
                     <div className="relative">
                       <select
                         value={childrenCount}
-                        onChange={(e) => setChildrenCount(e.target.value)}
+                        onChange={(e) => handleChildrenCountChange(e.target.value)}
                         className="w-full appearance-none border border-umber/15 bg-linen pl-5 pr-10 py-4 text-sm text-ink outline-none focus:border-ochre"
                       >
                         <option value="">Children</option>
@@ -335,6 +357,13 @@ export default function CTABooking() {
                       </span>
                     </div>
                   </div>
+
+                  <TravelerAgeDetails
+                    adults={adultsNum}
+                    children={childrenNum}
+                    value={ageDetails}
+                    onChange={setAgeDetails}
+                  />
 
                   <input
                     type="email"

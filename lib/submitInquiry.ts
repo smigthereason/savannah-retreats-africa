@@ -11,6 +11,8 @@ export type InquiryPayload = {
   dateEnd?: string;
   adults?: number;
   children?: number;
+  childrenAges?: number[]; // one entry per child, in order
+  seniorAdults?: number; // how many adults are 65+
   destination?: string;
   packageChoice?: string;
 };

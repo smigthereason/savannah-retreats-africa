@@ -1,9 +1,8 @@
 "use client";
-
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
@@ -42,7 +41,6 @@ export default function AdminLoginPage() {
         <p className="mt-3 text-[14px] text-ink/70">
           Enter the admin password to view and manage inquiries.
         </p>
-
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <label className="block">
             <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
@@ -56,9 +54,7 @@ export default function AdminLoginPage() {
               className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
             />
           </label>
-
           {error && <p className="text-[13px] text-red-600">{error}</p>}
-
           <button
             type="submit"
             disabled={submitting}
@@ -69,5 +65,19 @@ export default function AdminLoginPage() {
         </form>
       </div>
     </section>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <section className="bg-linen w-full min-h-screen flex items-center justify-center">
+          <p className="text-ink/60 text-sm">Loading…</p>
+        </section>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { submitInquiry } from "@/lib/submitInquiry";
+import TravelerAgeDetails, {
+  emptyTravelerAgeDetails,
+  resizeChildrenAges,
+  type TravelerAgeDetailsValue,
+} from "@/components/shared/TravelerAgeDetails";
 
 const DESTINATIONS = [
   "Maasai Mara",
@@ -28,6 +33,17 @@ export default function TripPlannerForm() {
   const [dateEnd, setDateEnd] = useState("");
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
+  const [ageDetails, setAgeDetails] = useState<TravelerAgeDetailsValue>(
+    emptyTravelerAgeDetails()
+  );
+
+  function handleChildrenChange(n: number) {
+    setChildren(n);
+    setAgeDetails((prev) => ({
+      ...prev,
+      childrenAges: resizeChildrenAges(prev.childrenAges, n),
+    }));
+  }
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
@@ -58,6 +74,8 @@ export default function TripPlannerForm() {
         dateEnd: dateEnd || undefined,
         adults,
         children,
+        childrenAges: children > 0 ? ageDetails.childrenAges : undefined,
+        seniorAdults: ageDetails.seniorAdults || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -165,11 +183,21 @@ export default function TripPlannerForm() {
                 <input
                   type="number"
                   min={0}
+                  max={8}
                   value={children}
-                  onChange={(e) => setChildren(Number(e.target.value))}
+                  onChange={(e) => handleChildrenChange(Number(e.target.value))}
                   className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                 />
               </label>
+            </div>
+
+            <div className="mt-5">
+              <TravelerAgeDetails
+                adults={adults}
+                children={children}
+                value={ageDetails}
+                onChange={setAgeDetails}
+              />
             </div>
           </div>
 

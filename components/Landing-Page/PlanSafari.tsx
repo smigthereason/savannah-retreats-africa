@@ -2,6 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { submitInquiry } from "@/lib/submitInquiry";
+import TravelerAgeDetails, {
+  emptyTravelerAgeDetails,
+  resizeChildrenAges,
+  type TravelerAgeDetailsValue,
+} from "@/components/shared/TravelerAgeDetails";
 
 // ── Calendar component ──
 const MONTHS = [
@@ -161,9 +166,21 @@ export default function PlanSafari() {
   });
   const [calOpen, setCalOpen] = useState(false);
   const calRef = useRef<HTMLDivElement>(null);
-  const [travelers, setTravelers] = useState("2 Adults");
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [ageDetails, setAgeDetails] = useState<TravelerAgeDetailsValue>(
+    emptyTravelerAgeDetails()
+  );
   const [packageChoice, setPackageChoice] = useState("Safari Only");
   const [email, setEmail] = useState("");
+
+  function handleChildrenChange(n: number) {
+    setChildren(n);
+    setAgeDetails((prev) => ({
+      ...prev,
+      childrenAges: resizeChildrenAges(prev.childrenAges, n),
+    }));
+  }
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -213,7 +230,10 @@ export default function PlanSafari() {
         packageChoice,
         dateStart: dates.start ? dates.start.toISOString().slice(0, 10) : undefined,
         dateEnd: dates.end ? dates.end.toISOString().slice(0, 10) : undefined,
-        message: `Travelers: ${travelers}`,
+        adults,
+        children,
+        childrenAges: children > 0 ? ageDetails.childrenAges : undefined,
+        seniorAdults: ageDetails.seniorAdults || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -277,16 +297,34 @@ export default function PlanSafari() {
               </div>
             </Field>
 
-            <Field label="Travelers">
+            <Field label="Adults">
               <select
-                value={travelers}
-                onChange={(e) => setTravelers(e.target.value)}
+                value={adults}
+                onChange={(e) => setAdults(Number(e.target.value))}
                 className="w-full bg-linen px-5 py-5 pr-12 text-sm text-ink outline-none appearance-none"
               >
-                <option>2 Adults</option>
-                <option>1 Adult</option>
-                <option>3 Adults</option>
-                <option>Family (4+)</option>
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <option key={n} value={n}>
+                    {n} Adult{n > 1 ? "s" : ""}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
+                ▾
+              </span>
+            </Field>
+
+            <Field label="Children">
+              <select
+                value={children}
+                onChange={(e) => handleChildrenChange(Number(e.target.value))}
+                className="w-full bg-linen px-5 py-5 pr-12 text-sm text-ink outline-none appearance-none"
+              >
+                {[0, 1, 2, 3, 4].map((n) => (
+                  <option key={n} value={n}>
+                    {n} {n === 1 ? "Child" : "Children"}
+                  </option>
+                ))}
               </select>
               <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50 text-xs">
                 ▾
@@ -319,6 +357,17 @@ export default function PlanSafari() {
                 className="w-full bg-linen px-5 py-5 text-sm text-ink placeholder:text-ink/50 outline-none"
               />
             </Field>
+
+            {(adults > 0 || children > 0) && (
+              <div className="w-full">
+                <TravelerAgeDetails
+                  adults={adults}
+                  children={children}
+                  value={ageDetails}
+                  onChange={setAgeDetails}
+                />
+              </div>
+            )}
 
             <button type="submit" disabled={submitting} className="btn-ochre disabled:opacity-60">
               {submitting ? "Sending…" : "Check Availability"}
