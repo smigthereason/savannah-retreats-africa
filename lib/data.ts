@@ -105,21 +105,21 @@ export const testimonial = {
 
 export const journal = [
   {
-    date: { month: "Dec", day: "02" },
+    date: { month: "Aug", day: "14" },
     category: "Migration",
     title: "Best time to visit the Maasai Mara",
     image:
       "https://images.unsplash.com/photo-1564101160531-4838e8a5f4e7?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    date: { month: "Dec", day: "04" },
+    date: { month: "Jan", day: "04" },
     category: "Itineraries",
     title: "Beach and safari combo works",
     image:
       "https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?q=80&w=1600&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "06" },
+    date: { month: "Sep", day: "06" },
     category: "First-Timers",
     title: "What to pack for your first safari",
     image:
@@ -133,14 +133,14 @@ export const journal = [
       "https://images.unsplash.com/photo-1741850821150-58b56e0e6156?q=80&w=1600&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "10" },
+    date: { month: "Oct", day: "10" },
     category: "Field Notes",
     title: "Reading the savanna before your guide points it out",
     image:
       "https://images.unsplash.com/photo-1757777598981-2a589811168d?q=80&w=1600&auto=format&fit=crop",
   },
   {
-    date: { month: "Dec", day: "12" },
+    date: { month: "Mar", day: "12" },
     category: "Destinations",
     title: "Mount Kenya's forest lodges: safari at altitude",
     image:

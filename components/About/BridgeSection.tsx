@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { footer } from "@/lib/data";
 import { bridgeIntro as bridgeContent } from "@/lib/about-data";
+import { Logo, MatHeadline } from "@/public/index";
+
 
 export default function BridgeSection() {
   return (
@@ -9,12 +11,13 @@ export default function BridgeSection() {
         <div className="grid grid-cols-1 items-center gap-14 md:grid-cols-2">
           <div className="order-2 md:order-1 relative h-[420px] w-full md:h-[520px]">
             <Image
-              src="https://images.unsplash.com/photo-1554863228-9c6d8c5d5f8b?q=80&w=1400&auto=format&fit=crop"
+              src={Logo}
               alt="Trip designer reviewing a Kenya safari itinerary"
               fill
               className="object-cover"
             />
           </div>
+
 
           <div className="order-1 md:order-2">
             <span className="eyebrow">{bridgeContent.eyebrow}</span>

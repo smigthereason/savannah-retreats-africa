@@ -14,9 +14,9 @@ export const bridgeIntro = {
   eyebrow: "Based in the USA",
   headline: "We Speak Your Language, Literally and Otherwise",
   paragraphs: [
-    "Savannah Retreats Africa is based right here in the United States. That's not just an address — it means we understand the standards of service, safety, and seamless communication American travelers expect, because we hold ourselves to them every day.",
+    "Savannah Retreats Africa is based right here in the United States. That's not just an address; it means we understand the standards of service, safety, and seamless communication American travelers expect, because we hold ourselves to them every day.",
     "A US-based phone number that's actually answered. Pricing you can read in dollars without doing mental math. A team that's awake and reachable in your time zone when a flight gets delayed the night before departure. The small things that, on international trips, turn out to be the things that matter most.",
-    "None of that comes at the cost of authenticity. It's the opposite — being US-based frees us to spend our time on what actually makes a safari extraordinary: the guides, the lodges, and the routes on the Kenyan side that we've vetted ourselves, not outsourced sight unseen.",
+    "None of that comes at the cost of authenticity. It's the opposite, being US-based frees us to spend our time on what actually makes a safari extraordinary: the guides, the lodges, and the routes on the Kenyan side that we've vetted ourselves, not outsourced sight unseen.",
   ],
   phoneLabel: "US Reservations Line",
 };
@@ -48,13 +48,13 @@ export const whyUsBased = {
   eyebrow: "Why It Matters",
   headline: "The Reliability of Home, the Reality of Kenya",
   paragraphs: [
-    "International trip planning fails most often at the handoffs — between booking platforms, between time zones, between a US traveler's expectations and a ground operator who's never spoken to them directly. We built Savannah Retreats Africa to close every one of those gaps ourselves.",
+    "International trip planning fails most often at the handoffs; between booking platforms, between time zones, between a US traveler's expectations and a ground operator who's never spoken to them directly. We built Savannah Retreats Africa to close every one of those gaps ourselves.",
   ],
   points: [
     {
       title: "One Point of Contact",
       description:
-        "From your first question to your flight home, you're talking to the same team — not bounced between a booking site, a local operator, and a lodge's own reservations desk.",
+        "From your first question to your flight home, you're talking to the same team, not bounced between a booking site, a local operator, and a lodge's own reservations desk.",
     },
     {
       title: "US Consumer Standards",
@@ -64,7 +64,7 @@ export const whyUsBased = {
     {
       title: "Boots on the Ground",
       description:
-        "Being US-based doesn't mean working at a distance — our Kenyan guiding and lodge partners are people we know personally, not names on a spreadsheet.",
+        "Being US-based doesn't mean working at a distance, our Kenyan guiding and lodge partners are people we know personally, not names on a spreadsheet.",
     },
     {
       title: "Support in Your Time Zone",

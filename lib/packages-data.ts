@@ -323,7 +323,7 @@ export const packages: SafariPackage[] = [
     bestSeason: "Best during Kenyan & UK school holidays",
     camps: "Family tents in the Mara, beach villa on Diani",
     image:
-      "https://images.unsplash.com/photo-1493558103817-58b773e8c7e7?q=80&w=1600&auto=format&fit=crop",
+      "/Family.jpg",
     description:
       "Five nights of family-friendly game drives in the Mara, then four nights to decompress on Diani's white sand — paced for children, with a beach villa to finish.",
     highlights: [
