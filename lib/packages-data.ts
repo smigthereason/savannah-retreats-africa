@@ -276,8 +276,7 @@ export const packages: SafariPackage[] = [
     bestSeason: "Year-round; a two-hour drive from Nairobi",
     camps: "Lakeshore lodges inside the national park",
     image:
-      // "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1600&auto=format&fit=crop",
-      "https://www.newmarketholidays.co.uk/media/yyzd5sp3/white-rhinos-with-flamingos-in-background.jpg?format=webp&v=1dcaa47c8f2d670?format=webp&height=340&width=625",
+      "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1600&auto=format&fit=crop",
     description:
       "A short break for a long weekend — both black and white rhino, regular leopard sightings in the euphorbia forest, and a two-hour drive each way from Nairobi.",
     highlights: [

@@ -160,5 +160,5 @@ export const footer = {
     "Savannah Retreats Africa designs private, fully guided safari journeys across Kenya, built one traveler at a time.",
   address: ["1616 Broadway", "New York, NY 10001", "United States"],
   phone: "+1 855 270 0044",
-  email: "savannahretreatsafrica@gmail.com",
+  email: "info@savannahretreatsafrica.com",
 };

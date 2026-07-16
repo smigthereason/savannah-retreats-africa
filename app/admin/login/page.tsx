@@ -23,7 +23,11 @@ function LoginForm() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Incorrect password");
       }
-      const redirectTo = searchParams.get("from") || "/admin";
+      const from = searchParams.get("from");
+      // Only follow ?from= if it's a same-origin relative path — never
+      // an absolute/external URL (open-redirect guard).
+      const redirectTo =
+        from && from.startsWith("/") && !from.startsWith("//") ? from : "/admin";
       router.push(redirectTo);
       router.refresh();
     } catch (err) {

@@ -55,6 +55,54 @@ function buildReplyUrl(inquiry: Inquiry) {
   return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
+const CSV_COLUMNS: (keyof Inquiry)[] = [
+  "_createdAt",
+  "submittedAt",
+  "type",
+  "status",
+  "name",
+  "email",
+  "phone",
+  "message",
+  "destination",
+  "destinations",
+  "tier",
+  "dateStart",
+  "dateEnd",
+  "adults",
+  "children",
+  "packageChoice",
+];
+
+function csvEscape(value: unknown) {
+  if (value === undefined || value === null) return "";
+  const str = Array.isArray(value) ? value.join("; ") : String(value);
+  // Quote any field containing a comma, quote, or newline; double up
+  // internal quotes per RFC 4180.
+  if (/[",\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function downloadCsv(rows: Inquiry[]) {
+  const header = CSV_COLUMNS.join(",");
+  const body = rows
+    .map((row) => CSV_COLUMNS.map((col) => csvEscape(row[col])).join(","))
+    .join("\n");
+  const csv = `${header}\n${body}`;
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `inquiries-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function InquiryDashboard({
   initialInquiries,
 }: {
@@ -64,11 +112,23 @@ export default function InquiryDashboard({
   const [statusFilter, setStatusFilter] =
     useState<(typeof STATUS_FILTERS)[number]["value"]>("all");
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const visible = useMemo(() => {
-    if (statusFilter === "all") return inquiries;
-    return inquiries.filter((i) => i.status === statusFilter);
-  }, [inquiries, statusFilter]);
+    let result = inquiries;
+    if (statusFilter !== "all") {
+      result = result.filter((i) => i.status === statusFilter);
+    }
+    const q = search.trim().toLowerCase();
+    if (q) {
+      result = result.filter((i) =>
+        [i.name, i.email, i.phone, i.message, i.destination, i.packageChoice]
+          .filter(Boolean)
+          .some((field) => field!.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [inquiries, statusFilter, search]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: inquiries.length };
@@ -113,15 +173,23 @@ export default function InquiryDashboard({
               Plan Safari.
             </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-[11px] uppercase tracking-widest2 text-ochre hover:underline"
-          >
-            Sign out
-          </button>
+          <div className="flex items-center gap-5">
+            <button
+              onClick={() => downloadCsv(visible)}
+              className="text-[11px] uppercase tracking-widest2 text-umber hover:text-ochre hover:underline"
+            >
+              Export CSV ({visible.length})
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-[11px] uppercase tracking-widest2 text-ochre hover:underline"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
+        <div className="mt-8 flex flex-wrap items-center gap-2">
           {STATUS_FILTERS.map((f) => (
             <button
               key={f.value}
@@ -137,6 +205,14 @@ export default function InquiryDashboard({
               <span className="ml-1.5 opacity-70">({counts[f.value] || 0})</span>
             </button>
           ))}
+
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search name, email, phone, message…"
+            className="ml-auto w-full max-w-xs border border-umber/15 bg-linen px-4 py-2.5 text-[13px] text-ink outline-none focus:border-ochre md:w-64"
+          />
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
