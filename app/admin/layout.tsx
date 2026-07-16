@@ -22,7 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="mx-auto flex max-w-8xl items-center justify-between gap-4 px-6 py-3 md:px-10">
           <Link href="/admin" className="flex items-center gap-2.5">
             <Image
-              src="/logo-no-bg.png"
+              src="/admin-logo.png"
               alt="Savannah Retreats Africa"
               width={32}
               height={32}
