@@ -77,6 +77,19 @@ export const inquiry = defineType({
     defineField({ name: "dateEnd", title: "Latest Travel Date", type: "date" }),
     defineField({ name: "adults", title: "Adults", type: "number" }),
     defineField({ name: "children", title: "Children", type: "number" }),
+    defineField({
+      name: "childrenAges",
+      title: "Children's Ages",
+      type: "array",
+      of: [{ type: "number" }],
+      description: "One entry per child, in order. Needed for park entry rates, kids' programs, and lodge age policies.",
+    }),
+    defineField({
+      name: "seniorAdults",
+      title: "Adults Aged 65+",
+      type: "number",
+      description: "How many of the adults above are 65 or older — helps plan pacing/accessibility.",
+    }),
 
     // CTABooking / PlanSafari
     defineField({ name: "destination", title: "Destination (single)", type: "string" }),

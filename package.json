@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
+    "imapflow": "^1.4.7",
     "lucide-react": "^1.21.0",
     "next": "^16.2.9",
     "next-sanity": "^13.1.1",
+    "nodemailer": "^9.0.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "styled-components": "^6.4.3",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/styled-components": "^5.1.36",

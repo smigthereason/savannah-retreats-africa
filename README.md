@@ -30,9 +30,10 @@ Open http://localhost:3000.
   single-operator site lock, not a multi-user account system.
 - **No payment processor, no customer accounts.** Confirmed absent, not
   just unbuilt — see the audit report for how that was verified.
-- **Transactional email** goes through Resend (`lib/mail.ts`) — an
+- **Transactional email** goes through the `info@savannahretreatsafrica.com`
+  mailbox via SMTP (`lib/mail.ts`, using Namecheap Private Email) — an
   inquiry confirmation to the customer and a new-lead alert to
-  `ADMIN_ALERT_EMAIL`. If `RESEND_API_KEY` isn't set, sending is
+  `ADMIN_ALERT_EMAIL`. If the `SMTP_*` vars aren't set, sending is
   skipped (logged, not thrown) so the rest of the flow still works.
 
 ## Environment variables
@@ -41,8 +42,9 @@ See `.env.example` for the full list and where to get each value.
 Required at minimum for `/admin` and inquiry submission to work:
 `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`,
 `SANITY_API_TOKEN`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`.
-Email (`RESEND_API_KEY`, `MAIL_FROM`, `ADMIN_ALERT_EMAIL`) is optional
-but recommended before sending real customers to the forms.
+Email (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`,
+`ADMIN_ALERT_EMAIL`) is optional but recommended before sending real
+customers to the forms.
 
 ## Design tokens
 
@@ -76,7 +78,7 @@ lib/
                       — static content (not yet in Sanity)
   sanity/client.ts    — `client` (public, read-only, currently unused) and
                          `writeClient` (server-only, used for inquiries)
-  mail.ts             — Resend transactional email
+  mail.ts             — SMTP transactional email (Namecheap Private Email)
   rateLimit.ts         — lightweight in-memory rate limiter for public routes
   submitInquiry.ts     — client-side helper all four forms call
 ```

@@ -26,12 +26,6 @@ const STATUS_COLORS: Record<Inquiry["status"], string> = {
   archived: "bg-ink/20 text-ink",
 };
 
-// The Gmail account replies should be sent from. Opens Gmail's web
-// compose window scoped to this account (via `authuser`), which is far
-// more reliable than a plain mailto: link — that just hands off to
-// whatever mail app happens to be your OS default.
-const REPLY_FROM = "savannahretreatsafricaa@gmail.com";
-
 function formatDate(iso?: string) {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("en-US", {
@@ -41,19 +35,15 @@ function formatDate(iso?: string) {
   });
 }
 
-function buildReplyUrl(inquiry: Inquiry) {
-  const subject = `Re: Your enquiry — Savannah Retreats Africa`;
-  const body = `Hi ${inquiry.name || "there"},\n\nThanks for reaching out to Savannah Retreats Africa.\n\n`;
-  const params = new URLSearchParams({
-    view: "cm",
-    fs: "1",
-    to: inquiry.email,
-    su: subject,
-    body,
-    authuser: REPLY_FROM,
-  });
-  return `https://mail.google.com/mail/?${params.toString()}`;
-}
+// No documented/verified compose-prefill URL exists for Namecheap's
+// Private Email webmail (its compose window appears to be a modal that
+// doesn't change the URL) — so rather than guess at query params that
+// might silently do nothing, this opens the shared Inbox itself. Every
+// team member logs in as info@savannahretreatsafrica.com, not their own
+// personal mail app, which is the actual problem this solves — the
+// recipient/subject/body just won't be pre-filled, unlike the in-app
+// reply composer above, which should cover most day-to-day replies.
+const PRIVATE_EMAIL_INBOX_URL = "https://privateemail.com/spm/mail/?f=INBOX";
 
 const CSV_COLUMNS: (keyof Inquiry)[] = [
   "_createdAt",
@@ -71,6 +61,8 @@ const CSV_COLUMNS: (keyof Inquiry)[] = [
   "dateEnd",
   "adults",
   "children",
+  "childrenAges",
+  "seniorAdults",
   "packageChoice",
 ];
 
@@ -103,6 +95,76 @@ function downloadCsv(rows: Inquiry[]) {
   URL.revokeObjectURL(url);
 }
 
+function defaultReplyDraft() {
+  return {
+    subject: "Re: Your enquiry — Savannah Retreats Africa",
+    message: "Thanks for reaching out to Savannah Retreats Africa.\n\n",
+  };
+}
+
+// Generates warm, ready-to-send copy for the two most common replies —
+// admin can still edit before sending, this just removes the blank-page
+// problem for the most repetitive part of the job.
+//
+// Deliberately field-presence-driven rather than hardcoded per form,
+// since the underlying forms genuinely differ in what they ask for:
+//  - CTABooking ("Check Availability") only ever collects dates + party
+//    size — no destination/package at all, so there's no specific "item"
+//    to name.
+//  - PlanSafari collects BOTH a destination and a packageChoice — naming
+//    only one of those (as the previous version did) silently drops the
+//    other.
+//  - ContactSection rarely has dates at all — see isAvailabilityRelevant
+//    below, which gates whether these buttons show up at all.
+function buildAvailabilityParagraph(
+  inquiry: Inquiry,
+  choice: "available" | "unavailable"
+) {
+  const itemLabel =
+    inquiry.packageChoice && inquiry.destination
+      ? `${inquiry.packageChoice} in ${inquiry.destination}`
+      : inquiry.packageChoice ||
+        inquiry.reference?.label ||
+        inquiry.destination ||
+        (inquiry.destinations && inquiry.destinations.length > 0
+          ? inquiry.destinations.join(", ")
+          : undefined);
+
+  const dateRange =
+    inquiry.dateStart && inquiry.dateEnd
+      ? `${formatDate(inquiry.dateStart)} – ${formatDate(inquiry.dateEnd)}`
+      : inquiry.dateStart || inquiry.dateEnd || "your selected dates";
+
+  const partySize = buildPartySizeClause(inquiry);
+
+  if (choice === "available") {
+    const subject = itemLabel ? `${itemLabel} is available` : "we have availability";
+    return `Good news — ${subject} for ${dateRange}${partySize}. To secure your booking, we ask for a 30% deposit to confirm the reservation, with the balance due closer to your travel date. Our team will follow up shortly with payment details and next steps — we can't wait to help you plan this trip.`;
+  }
+  const subject = itemLabel ? `${itemLabel} is not available` : "we don't have availability";
+  return `Thank you for your patience while we checked availability. Unfortunately, ${subject} for ${dateRange}${partySize}. We'd love to help you find a wonderful alternative — let us know if you'd like us to suggest different dates or a similar experience, and we'll follow up with options.`;
+}
+
+function buildPartySizeClause(inquiry: Inquiry) {
+  if (!inquiry.adults && !inquiry.children) return "";
+  const adultsPart = `${inquiry.adults ?? 0} adult${inquiry.adults === 1 ? "" : "s"}`;
+  const seniorPart = inquiry.seniorAdults ? ` (${inquiry.seniorAdults} aged 65+)` : "";
+  const childrenPart = inquiry.children
+    ? `, ${inquiry.children} child${inquiry.children === 1 ? "" : "ren"}`
+    : "";
+  return ` for your group of ${adultsPart}${seniorPart}${childrenPart}`;
+}
+
+// Only date-based requests (Check Availability, Plan Safari, Trip
+// Planner, or a package/lodge-referenced Contact submission that
+// happens to include dates) make sense to answer with an availability
+// verdict. A plain "I have a question" contact message has nothing to
+// be available or unavailable for — showing the toggle there would
+// just produce a confusing, contextless reply.
+function isAvailabilityRelevant(inquiry: Inquiry) {
+  return Boolean(inquiry.dateStart || inquiry.dateEnd);
+}
+
 export default function InquiryDashboard({
   initialInquiries,
 }: {
@@ -113,6 +175,95 @@ export default function InquiryDashboard({
     useState<(typeof STATUS_FILTERS)[number]["value"]>("all");
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+
+  const [replyOpenId, setReplyOpenId] = useState<string | null>(null);
+  const [replyDrafts, setReplyDrafts] = useState<
+    Record<string, { subject: string; message: string }>
+  >({});
+  const [replySendingId, setReplySendingId] = useState<string | null>(null);
+  const [replyErrorId, setReplyErrorId] = useState<Record<string, string>>({});
+  const [replySuccessId, setReplySuccessId] = useState<string | null>(null);
+  const [copiedEmailId, setCopiedEmailId] = useState<string | null>(null);
+  const [replyArchivedOk, setReplyArchivedOk] = useState<Record<string, boolean>>({});
+  const [replyAvailability, setReplyAvailability] = useState<
+    Record<string, "available" | "unavailable" | undefined>
+  >({});
+  const [insertedAvailabilityText, setInsertedAvailabilityText] = useState<
+    Record<string, string>
+  >({});
+
+  function openReply(inquiry: Inquiry) {
+    setReplyOpenId(inquiry._id);
+    setReplyErrorId((cur) => ({ ...cur, [inquiry._id]: "" }));
+    setReplyDrafts((cur) =>
+      cur[inquiry._id] ? cur : { ...cur, [inquiry._id]: defaultReplyDraft() }
+    );
+  }
+
+  function updateDraft(id: string, patch: Partial<{ subject: string; message: string }>) {
+    setReplyDrafts((cur) => ({ ...cur, [id]: { ...cur[id], ...patch } }));
+  }
+
+  function toggleAvailability(inquiry: Inquiry, choice: "available" | "unavailable") {
+    const id = inquiry._id;
+    const current = replyAvailability[id];
+    const next = current === choice ? undefined : choice;
+
+    const draft = replyDrafts[id] || defaultReplyDraft();
+    let message = draft.message;
+    const prevInserted = insertedAvailabilityText[id];
+    if (prevInserted && message.includes(prevInserted)) {
+      message = message.replace(prevInserted, "").replace(/\n{3,}/g, "\n\n").trim();
+    }
+
+    let newInserted = "";
+    if (next) {
+      newInserted = buildAvailabilityParagraph(inquiry, next);
+      message = message ? `${newInserted}\n\n${message}` : newInserted;
+    }
+
+    setReplyAvailability((cur) => ({ ...cur, [id]: next }));
+    setInsertedAvailabilityText((cur) => ({ ...cur, [id]: newInserted }));
+    setReplyDrafts((cur) => ({ ...cur, [id]: { ...draft, message } }));
+  }
+
+  async function sendReply(inquiry: Inquiry) {
+    const draft = replyDrafts[inquiry._id];
+    if (!draft?.subject.trim() || !draft?.message.trim()) return;
+
+    setReplySendingId(inquiry._id);
+    setReplyErrorId((cur) => ({ ...cur, [inquiry._id]: "" }));
+    try {
+      const res = await fetch(`/api/admin/inquiries/${inquiry._id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject: draft.subject, message: draft.message }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Failed to send reply.");
+
+      // Mirror the server's status bump locally so the UI updates
+      // without a full refetch.
+      setInquiries((cur) =>
+        cur.map((i) =>
+          i._id === inquiry._id && i.status !== "booked" && i.status !== "archived"
+            ? { ...i, status: "contacted" }
+            : i
+        )
+      );
+      setReplyOpenId(null);
+      setReplySuccessId(inquiry._id);
+      setReplyArchivedOk((cur) => ({ ...cur, [inquiry._id]: Boolean(data.archived) }));
+      setTimeout(() => setReplySuccessId((cur) => (cur === inquiry._id ? null : cur)), 6000);
+    } catch (err) {
+      setReplyErrorId((cur) => ({
+        ...cur,
+        [inquiry._id]: err instanceof Error ? err.message : "Failed to send reply.",
+      }));
+    } finally {
+      setReplySendingId(null);
+    }
+  }
 
   const visible = useMemo(() => {
     let result = inquiries;
@@ -257,7 +408,10 @@ export default function InquiryDashboard({
                 {(inquiry.adults || inquiry.children) && (
                   <p className="flex items-center gap-2">
                     <Users className="h-3.5 w-3.5 text-ochre" strokeWidth={1.5} />
-                    {inquiry.adults || 0} adults, {inquiry.children || 0} children
+                    {inquiry.adults || 0} adult{inquiry.adults === 1 ? "" : "s"}
+                    {inquiry.seniorAdults ? ` (${inquiry.seniorAdults} aged 65+)` : ""}
+                    {inquiry.children ? `, ${inquiry.children} child${inquiry.children === 1 ? "" : "ren"}` : ""}
+                    {inquiry.childrenAges?.length ? ` (ages ${inquiry.childrenAges.join(", ")})` : ""}
                   </p>
                 )}
               </div>
@@ -325,15 +479,123 @@ export default function InquiryDashboard({
                   </span>
                 </div>
 
-                <a
-                  href={buildReplyUrl(inquiry)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-ochre"
-                >
-                  Reply by Email
-                </a>
+                <div className="flex items-center gap-3">
+                  {replySuccessId === inquiry._id && (
+                    <span className="text-[12px] text-acacia">
+                      Reply sent ✓
+                      {replyArchivedOk[inquiry._id] === false && (
+                        <span className="text-ink/50"> (not confirmed in Sent — check IMAP settings)</span>
+                      )}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      replyOpenId === inquiry._id
+                        ? setReplyOpenId(null)
+                        : openReply(inquiry)
+                    }
+                    className="btn-ochre"
+                  >
+                    {replyOpenId === inquiry._id ? "Cancel" : "Reply by Email"}
+                  </button>
+                </div>
               </div>
+
+              {replyOpenId === inquiry._id && (
+                <div className="mt-4 border-t border-umber/10 pt-5">
+                  {isAvailabilityRelevant(inquiry) && (
+                    <div>
+                      <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+                        Availability (optional — inserts ready-to-send wording)
+                      </span>
+                      <div className="mt-1.5 flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleAvailability(inquiry, "available")}
+                          className={`flex items-center gap-1.5 border px-3 py-1.5 text-[12px] transition-colors ${
+                            replyAvailability[inquiry._id] === "available"
+                              ? "border-acacia bg-acacia text-linen"
+                              : "border-umber/20 text-umber hover:border-acacia"
+                          }`}
+                        >
+                          ✓ Available
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => toggleAvailability(inquiry, "unavailable")}
+                          className={`flex items-center gap-1.5 border px-3 py-1.5 text-[12px] transition-colors ${
+                            replyAvailability[inquiry._id] === "unavailable"
+                              ? "border-red-600 bg-red-600 text-linen"
+                              : "border-umber/20 text-umber hover:border-red-600"
+                          }`}
+                        >
+                          ✗ Unavailable
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <label className="mt-4 block">
+                    <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+                      Subject
+                    </span>
+                    <input
+                      type="text"
+                      value={replyDrafts[inquiry._id]?.subject ?? ""}
+                      onChange={(e) => updateDraft(inquiry._id, { subject: e.target.value })}
+                      className="mt-1.5 w-full border border-umber/15 bg-linen px-3 py-2 text-[13px] text-ink outline-none focus:border-ochre"
+                    />
+                  </label>
+                  <label className="mt-3 block">
+                    <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+                      Message
+                    </span>
+                    <textarea
+                      rows={6}
+                      value={replyDrafts[inquiry._id]?.message ?? ""}
+                      onChange={(e) => updateDraft(inquiry._id, { message: e.target.value })}
+                      className="mt-1.5 w-full border border-umber/15 bg-linen px-3 py-2 text-[13px] text-ink outline-none focus:border-ochre"
+                    />
+                  </label>
+                  {replyErrorId[inquiry._id] && (
+                    <p className="mt-2 text-[12px] text-red-600">{replyErrorId[inquiry._id]}</p>
+                  )}
+                  <div className="mt-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={PRIVATE_EMAIL_INBOX_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] uppercase tracking-widest2 text-ink/50 hover:text-ochre hover:underline"
+                      >
+                        Open Private Email inbox
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(inquiry.email);
+                          setCopiedEmailId(inquiry._id);
+                          setTimeout(
+                            () => setCopiedEmailId((cur) => (cur === inquiry._id ? null : cur)),
+                            2000
+                          );
+                        }}
+                        className="text-[11px] uppercase tracking-widest2 text-ink/50 hover:text-ochre hover:underline"
+                      >
+                        {copiedEmailId === inquiry._id ? "Copied ✓" : "Copy their email"}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => sendReply(inquiry)}
+                      disabled={replySendingId === inquiry._id}
+                      className="btn-ochre disabled:opacity-60"
+                    >
+                      {replySendingId === inquiry._id ? "Sending…" : "Send Reply"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 

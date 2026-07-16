@@ -19,6 +19,8 @@ export type Inquiry = {
   dateEnd?: string;
   adults?: number;
   children?: number;
+  childrenAges?: number[];
+  seniorAdults?: number;
   destination?: string;
   packageChoice?: string;
   submittedAt?: string;

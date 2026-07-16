@@ -33,6 +33,15 @@ function sanePartySize(value: unknown) {
   return n;
 }
 
+function saneChildrenAges(value: unknown): number[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const ages = value
+    .map((v) => (typeof v === "number" && Number.isFinite(v) ? Math.round(v) : null))
+    .filter((v): v is number => v !== null && v >= 0 && v <= 17)
+    .slice(0, 10);
+  return ages.length > 0 ? ages : undefined;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // --- Rate limit: 5 submissions per IP per 10 minutes -------------
@@ -87,6 +96,8 @@ export async function POST(req: NextRequest) {
       dateEnd: cappedString(body.dateEnd, "destination"),
       adults: sanePartySize(body.adults),
       children: sanePartySize(body.children),
+      childrenAges: saneChildrenAges(body.childrenAges),
+      seniorAdults: sanePartySize(body.seniorAdults),
       destination: cappedString(body.destination, "destination"),
       packageChoice: cappedString(body.packageChoice, "packageChoice"),
       submittedAt: new Date().toISOString(),
@@ -97,17 +108,40 @@ export async function POST(req: NextRequest) {
     // Best-effort notifications — never let an email failure fail the
     // request itself; the lead is already safely saved above.
     const adminAlertTo = process.env.ADMIN_ALERT_EMAIL;
+    const typeSubjectLabel: Record<string, string> = {
+      contact: "General Enquiry",
+      tripPlanner: "Trip Planning Request",
+      booking: "Booking Request",
+      planSafari: "Safari Search Enquiry",
+    };
     await Promise.allSettled([
       sendMail({
         to: email,
-        subject: "We've received your inquiry — Savannah Retreats Africa",
-        html: inquiryConfirmationEmail(name),
+        subject: `Re: ${typeSubjectLabel[body.type] || "Your Enquiry"} — Savannah Retreats Africa`,
+        html: inquiryConfirmationEmail(name, body.type),
       }),
       adminAlertTo
         ? sendMail({
             to: adminAlertTo,
             subject: `New ${body.type} inquiry from ${name || email}`,
-            html: newLeadAlertEmail({ type: body.type, name, email, phone: doc.phone, message }),
+            html: newLeadAlertEmail({
+              type: body.type,
+              name,
+              email,
+              phone: doc.phone,
+              message,
+              reference: doc.reference,
+              destinations: doc.destinations,
+              tier: doc.tier,
+              dateStart: doc.dateStart,
+              dateEnd: doc.dateEnd,
+              adults: doc.adults,
+              children: doc.children,
+              childrenAges: doc.childrenAges,
+              seniorAdults: doc.seniorAdults,
+              destination: doc.destination,
+              packageChoice: doc.packageChoice,
+            }),
           })
         : Promise.resolve(),
     ]);
