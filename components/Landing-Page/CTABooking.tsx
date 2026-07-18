@@ -1,6 +1,6 @@
 "use client";
 
-import { trustedBy } from "@/lib/data";
+import { trustedBy, intro } from "@/lib/data";
 import { useState, useRef, useEffect } from "react";
 import { PhoneCall } from "lucide-react";
 import { submitInquiry } from "@/lib/submitInquiry";
@@ -277,10 +277,10 @@ export default function CTABooking() {
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-[10px] uppercase tracking-widest2 text-linen/60">
-                    Plan a Trip
+                    {intro.phoneLabel}
                   </p>
                   <p className="font-display text-xl text-linen mt-0.5">
-                    +1 855 270 0044
+                    {intro.phone}
                   </p>
                 </div>
               </div>

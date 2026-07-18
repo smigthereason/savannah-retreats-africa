@@ -49,7 +49,7 @@ export const intro = {
     "Every itinerary is built around one traveler or one family at a time. Your guide, vehicle, and camp stay the same for the length of the trip, so the days build on each other instead of resetting at every stop.",
   ],
   phoneLabel: "Plan a Trip",
-  phone: "+1 855 270 0044",
+  phone: "+1 (682) 346-4863",
   image:
     "https://images.unsplash.com/photo-1547970810-dc1eac37d174?q=80&w=1600&auto=format&fit=crop",
 };
@@ -158,7 +158,11 @@ export const trustedBy = [
 export const footer = {
   about:
     "Savannah Retreats Africa designs private, fully guided safari journeys across Kenya, built one traveler at a time.",
-  address: ["1616 Broadway", "New York, NY 10001", "United States"],
-  phone: "+1 855 270 0044",
+  // Full street address still being finalized — deliberately left as
+  // just state/country (derived from the business phone's area code,
+  // Fort Worth/DFW, TX) rather than inventing a specific street/ZIP.
+  // Replace with the real mailing address once confirmed.
+  address: ["Texas", "United States"],
+  phone: "+1 (682) 346-4863",
   email: "info@savannahretreatsafrica.com",
 };

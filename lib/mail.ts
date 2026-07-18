@@ -191,10 +191,13 @@ function escapeHtml(value: string) {
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savannahretreatsafrica.com";
 const LOGO_URL = `${SITE_URL}/logo-no-bg.png`;
 
-// TODO: replace with your real business address and phone number
-// before sending this to real customers — these are placeholders.
-const BUSINESS_ADDRESS = "Nairobi, Kenya";
-const BUSINESS_PHONE = "+254 7XX XXX XXX";
+// Full street address still being finalized — deliberately just
+// state/country (Texas, matching the business phone's Fort Worth/DFW
+// area code) rather than a fabricated street/ZIP. Replace with the
+// real mailing address once confirmed — keep this in sync with
+// lib/data.ts's `footer` object and the JSON-LD in app/layout.tsx.
+const BUSINESS_ADDRESS = "Texas, United States";
+const BUSINESS_PHONE = "+1 (682) 346-4863";
 
 const COLORS = {
   linen: "#F7F4F0",
