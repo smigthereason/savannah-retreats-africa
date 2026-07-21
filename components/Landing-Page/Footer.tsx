@@ -77,6 +77,12 @@ export default function Footer() {
           </span>
           <div className="flex gap-5">
             <Link
+              href="/credits"
+              className="hover:text-linen/70 transition-colors"
+            >
+              Image Credits
+            </Link>
+            <Link
               href="/privacy"
               className="hover:text-linen/70 transition-colors"
             >

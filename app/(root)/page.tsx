@@ -3,7 +3,9 @@ import Intro from "@/components/Landing-Page/Intro";
 import PlanSafari from "@/components/Landing-Page/PlanSafari";
 import Testimonial from "@/components/Landing-Page/Testimonial";
 import Experiences from "@/components/Landing-Page/Experiences";
+import KenyaGlance from "@/components/Landing-Page/KenyaGlance";
 import CultureTeaser from "@/components/Landing-Page/CultureTeaser";
+import DiscoverTeaser from "@/components/Landing-Page/DiscoverTeaser";
 import Journal from "@/components/Landing-Page/Journal";
 import CTABooking from "@/components/Landing-Page/CTABooking";
 
@@ -24,7 +26,9 @@ export default function Home() {
       <PlanSafari />
       <Testimonial />
       <Experiences />
+      <KenyaGlance />
       <CultureTeaser />
+      <DiscoverTeaser />
       <Journal />
       <CTABooking />
     </main>

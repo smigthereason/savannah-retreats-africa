@@ -9,6 +9,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      {
+        protocol: "https",
         hostname: "www.masaimara.travel",
       },
       // NOTE: www.newmarketholidays.co.uk removed — was hotlinking a
@@ -25,19 +29,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "www.south-african-lodges.com",
-      },
-      {
-        protocol: "https",
-        hostname: "i.pinimg.com",
-      },
-      {
-        protocol: "https",
         hostname: "images.scottdunn.com",
       },
       {
         protocol: "https",
         hostname: "cdn.tuko.co.ke",
+      },
+      {
+        protocol: "https",
+        hostname: "pixabay.com",
       },
     ],
   },

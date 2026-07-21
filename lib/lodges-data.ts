@@ -113,7 +113,7 @@ export const lodges: Lodge[] = [
     signature:
       "Pitched on a bend of the Ewaso Nyiro, close enough that crocodiles are visible from the dining tent.",
     image:
-      "https://images.unsplash.com/photo-1535941339077-2dc1c25d36d5?q=80&w=1600&auto=format&fit=crop",
+      "/ewuaso.jpg",
     description:
       "Twelve tents under riverine fever trees, in the only reserve where the Samburu Special Five gather in one place. Elephants cross the river in front of camp most afternoons.",
     amenities: [
@@ -123,19 +123,19 @@ export const lodges: Lodge[] = [
     ],
   },
   {
-    slug: "sable-springs-camp",
-    name: "Sable Springs Camp",
+    slug: "salt-lick-safari-lodge",
+    name: "Salt Lick Safari Lodge",
     coord: "03°S, 38°E",
-    eyebrow: "Tsavo East National Park",
+    eyebrow: "Tsavo West National Park",
     region: "Tsavo",
     category: "Tented Camp",
-    tier: "Classic Tented",
-    rooms: "16 tents",
+    tier: "Signature Luxury",
+    rooms: "10 rooms",
     priceFromPerNight: 260,
     signature:
       "Built directly around a natural waterhole — game viewing starts from the breakfast table.",
     image:
-      "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=1600&auto=format&fit=crop",
+      "/Tsavo-east.webp",
     description:
       "A classic tented camp facing one of Tsavo's busiest waterholes, with the comfort of a fenced perimeter and the price advantage of a park with lower fees than the Mara.",
     amenities: [
@@ -189,8 +189,8 @@ export const lodges: Lodge[] = [
     ],
   },
   {
-    slug: "rift-valley-lakehouse",
-    name: "Rift Valley Lakehouse",
+    slug: "great-rift-valley-lodge",
+    name: "Great Rift Valley Lodge",
     coord: "00°S, 36°E",
     eyebrow: "Lake Naivasha",
     region: "Naivasha",
@@ -201,7 +201,7 @@ export const lodges: Lodge[] = [
     signature:
       "Hippos grunt past the lawn most evenings — included in the room rate, whether you asked for it or not.",
     image:
-      "https://images.unsplash.com/photo-1547970810-dc1eac37d174?q=80&w=1600&auto=format&fit=crop",
+      "/Great-Rift-Valley-Lodge.jpg",
     description:
       "A ten-room lakeside lodge used as the Rift Valley stop on the road down to the Mara, or as a quiet weekend on its own — boat safaris, flamingos, and acacia forest walks.",
     amenities: [
@@ -211,8 +211,8 @@ export const lodges: Lodge[] = [
     ],
   },
   {
-    slug: "kirinyaga-forest-lodge",
-    name: "Kirinyaga Forest Lodge",
+    slug: "castle-forest-lodge",
+    name: "Castle Forest Lodge",
     coord: "00°N, 37°E",
     eyebrow: "Mount Kenya",
     region: "Mount Kenya",
@@ -223,7 +223,7 @@ export const lodges: Lodge[] = [
     signature:
       "Treehouse-style rooms in the montane forest canopy, with a waterhole lit for night viewing below.",
     image:
-      "https://images.unsplash.com/photo-1694964363999-964f056854ae?q=80&w=1600&auto=format&fit=crop",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Mt_Kenya_Castle_Lodge.jpg/960px-Mt_Kenya_Castle_Lodge.jpg",
     description:
       "Raised forest rooms on Mount Kenya's lower slopes, built around a floodlit waterhole that draws elephant and buffalo through the night. A quieter, cooler opening to a longer Kenya itinerary.",
     amenities: [
