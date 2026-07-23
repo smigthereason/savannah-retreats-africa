@@ -189,7 +189,7 @@ export const footer = {
   // just state/country (derived from the business phone's area code,
   // Fort Worth/DFW, TX) rather than inventing a specific street/ZIP.
   // Replace with the real mailing address once confirmed.
-  address: ["Texas", "United States"],
+  address: ["Spokane", "Washington"],
   phone: "+1 (682) 346-4863",
   email: "info@savannahretreatsafrica.com",
 };
