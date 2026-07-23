@@ -135,7 +135,7 @@ export const lodges: Lodge[] = [
     signature:
       "Built directly around a natural waterhole — game viewing starts from the breakfast table.",
     image:
-      "/Tsavo-east.webp",
+      "/Tsavo-west.webp",
     description:
       "A classic tented camp facing one of Tsavo's busiest waterholes, with the comfort of a fenced perimeter and the price advantage of a park with lower fees than the Mara.",
     amenities: [
