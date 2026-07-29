@@ -276,6 +276,7 @@ const INQUIRY_TYPE_HEADINGS: Record<string, string> = {
   tripPlanner: "Trip Planning Request",
   booking: "Booking Request",
   planSafari: "Safari Search Enquiry",
+  partner: "Partner Inquiry",
 };
 
 // ---------------------------------------------------------------------
@@ -302,13 +303,17 @@ export type InquiryDetails = {
   seniorAdults?: number;
   destination?: string;
   packageChoice?: string;
+  accessibilityNeeds?: string;
+  businessName?: string;
+  serviceType?: string;
+  serviceLocation?: string;
 };
 
 function buildInquiryRows(details: InquiryDetails): Array<[string, string]> {
   const {
     type, name, email, phone, destination, destinations, tier,
     packageChoice, dateStart, dateEnd, adults, children, childrenAges,
-    seniorAdults, reference,
+    seniorAdults, reference, businessName, serviceType, serviceLocation,
   } = details;
 
   const rows: Array<[string, string]> = [
@@ -317,6 +322,9 @@ function buildInquiryRows(details: InquiryDetails): Array<[string, string]> {
     ["Email", email],
   ];
   if (phone) rows.push(["Phone", phone]);
+  if (businessName) rows.push(["Business", businessName]);
+  if (serviceType) rows.push(["Service Type", serviceType]);
+  if (serviceLocation) rows.push(["Location", serviceLocation]);
   if (destination) rows.push(["Destination", destination]);
   if (destinations?.length) rows.push(["Destinations", destinations.join(", ")]);
   if (tier) rows.push(["Tier", tier]);
@@ -404,6 +412,11 @@ export function adminReplyEmail({
           ? `<p style="margin:12px 0 0; font-style:italic; color:${COLORS.ink};">"${escapeHtml(inquiry.message)}"</p>`
           : ""
       }
+      ${
+        inquiry.accessibilityNeeds
+          ? `<p style="margin:12px 0 0;"><strong>Accessibility needs:</strong> ${escapeHtml(inquiry.accessibilityNeeds)}</p>`
+          : ""
+      }
     </div>
   `;
 
@@ -423,7 +436,35 @@ export function newLeadAlertEmail(params: InquiryDetails) {
   const body = `
     ${renderRowsTable(buildInquiryRows(params))}
     ${params.message ? `<p style="margin:20px 0 0;"><strong>Message:</strong><br/>${escapeHtml(params.message)}</p>` : ""}
+    ${
+      params.accessibilityNeeds
+        ? `<div style="margin:20px 0 0; padding:14px 16px; background-color:#FDF3E7; border-left:3px solid ${COLORS.ochre};"><strong>Accessibility / accommodation needs:</strong><br/>${escapeHtml(params.accessibilityNeeds)}</div>`
+        : ""
+    }
     <p style="margin:24px 0 0; font-size:12px; color:#888;">View and manage this lead in /admin.</p>
   `;
   return emailShell({ eyebrow: "New Lead", heading: "New Inquiry Received", bodyHtml: body });
+}
+
+export function partnerConfirmationEmail(name: string | undefined) {
+  const greeting = name ? escapeHtml(name) : "there";
+  const body = `
+    <p style="margin:0 0 16px;">Dear ${greeting},</p>
+    <p style="margin:0 0 16px;">
+      Thank you for reaching out to Savannah Retreats Africa about
+      working together. We've received your details and a member of
+      our partnerships team will review them and follow up within a
+      few business days.
+    </p>
+    <p style="margin:0 0 16px;">
+      We're always looking to work with reliable people on the
+      ground across Kenya — lodges and camps, guides, transport, and
+      local experiences our travelers wouldn't otherwise find.
+    </p>
+    <p style="margin:24px 0 0;">
+      Warm regards,<br/>
+      <strong style="color:${COLORS.umber};">The Savannah Retreats Africa Team</strong>
+    </p>
+  `;
+  return emailShell({ eyebrow: "Re", heading: "Partnering With Us", bodyHtml: body });
 }

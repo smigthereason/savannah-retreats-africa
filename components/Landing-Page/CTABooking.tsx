@@ -193,6 +193,7 @@ export default function CTABooking() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accessibilityNeeds, setAccessibilityNeeds] = useState("");
 
   const handleDateSelect = (d: Date) => {
     if (!dates.start || (dates.start && dates.end)) {
@@ -244,6 +245,7 @@ export default function CTABooking() {
         children: childrenNum || undefined,
         childrenAges: childrenNum > 0 ? ageDetails.childrenAges : undefined,
         seniorAdults: ageDetails.seniorAdults || undefined,
+        accessibilityNeeds: accessibilityNeeds.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -371,6 +373,14 @@ export default function CTABooking() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email"
+                    className="w-full border border-umber/15 bg-linen px-5 py-4 text-sm text-ink placeholder:text-ink/50 outline-none focus:border-ochre"
+                  />
+
+                  <input
+                    type="text"
+                    value={accessibilityNeeds}
+                    onChange={(e) => setAccessibilityNeeds(e.target.value)}
+                    placeholder="Accessibility needs (optional)"
                     className="w-full border border-umber/15 bg-linen px-5 py-4 text-sm text-ink placeholder:text-ink/50 outline-none focus:border-ochre"
                   />
 

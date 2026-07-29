@@ -36,6 +36,14 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li className="pt-2">
+                <Link
+                  href="/partners"
+                  className="text-ochre hover:text-linen transition-colors"
+                >
+                  Partner With Us →
+                </Link>
+              </li>
             </ul>
           </div>
 

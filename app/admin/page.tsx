@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic"; // always fetch fresh, never cached
 export type Inquiry = {
   _id: string;
   _createdAt: string;
-  type: "contact" | "tripPlanner" | "booking" | "planSafari";
+  type: "contact" | "tripPlanner" | "booking" | "planSafari" | "partner";
   status: "new" | "contacted" | "booked" | "archived";
   name?: string;
   email: string;
@@ -23,6 +23,10 @@ export type Inquiry = {
   seniorAdults?: number;
   destination?: string;
   packageChoice?: string;
+  accessibilityNeeds?: string;
+  businessName?: string;
+  serviceType?: string;
+  serviceLocation?: string;
   submittedAt?: string;
 };
 

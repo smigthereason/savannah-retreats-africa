@@ -1,6 +1,7 @@
 import Hero from "@/components/Landing-Page/Hero";
 import Intro from "@/components/Landing-Page/Intro";
 import PlanSafari from "@/components/Landing-Page/PlanSafari";
+// import Testimonial from "@/components/Landing-Page/Testimonial"; // commented out until we have a real customer testimonial to show
 import Experiences from "@/components/Landing-Page/Experiences";
 import BigFiveVideography from "@/components/Landing-Page/BigFiveVideography";
 import KenyaGlance from "@/components/Landing-Page/KenyaGlance";
@@ -24,6 +25,7 @@ export default function Home() {
       <Hero />
       <Intro />
       <PlanSafari />
+      {/* <Testimonial /> */}
       <Experiences />
       <BigFiveVideography />
       <KenyaGlance />

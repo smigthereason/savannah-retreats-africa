@@ -47,6 +47,7 @@ export default function TripPlannerForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+  const [accessibilityNeeds, setAccessibilityNeeds] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -76,6 +77,7 @@ export default function TripPlannerForm() {
         children,
         childrenAges: children > 0 ? ageDetails.childrenAges : undefined,
         seniorAdults: ageDetails.seniorAdults || undefined,
+        accessibilityNeeds: accessibilityNeeds.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -270,6 +272,22 @@ export default function TripPlannerForm() {
                 rows={4}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
+                className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
+              />
+            </label>
+
+            <label className="mt-5 block">
+              <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+                Accessibility or accommodation needs (optional)
+              </span>
+              <p className="mt-1 text-[12px] text-ink/60">
+                Mobility, dietary, medical, or anything else that would help
+                us plan a trip that genuinely works for you.
+              </p>
+              <textarea
+                rows={3}
+                value={accessibilityNeeds}
+                onChange={(e) => setAccessibilityNeeds(e.target.value)}
                 className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
               />
             </label>

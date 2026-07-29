@@ -1,5 +1,5 @@
 export type InquiryPayload = {
-  type: "contact" | "tripPlanner" | "booking" | "planSafari";
+  type: "contact" | "tripPlanner" | "booking" | "planSafari" | "partner";
   name?: string;
   email: string;
   phone?: string;
@@ -15,6 +15,10 @@ export type InquiryPayload = {
   seniorAdults?: number; // how many adults are 65+
   destination?: string;
   packageChoice?: string;
+  accessibilityNeeds?: string; // optional free text — mobility, dietary, medical, or other accommodation needs
+  businessName?: string;
+  serviceType?: string;
+  serviceLocation?: string;
 };
 
 export async function submitInquiry(payload: InquiryPayload) {

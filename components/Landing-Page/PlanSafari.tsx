@@ -185,6 +185,7 @@ export default function PlanSafari() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accessibilityNeeds, setAccessibilityNeeds] = useState("");
 
   const handleDateSelect = (d: Date) => {
     if (!dates.start || (dates.start && dates.end)) {
@@ -234,6 +235,7 @@ export default function PlanSafari() {
         children,
         childrenAges: children > 0 ? ageDetails.childrenAges : undefined,
         seniorAdults: ageDetails.seniorAdults || undefined,
+        accessibilityNeeds: accessibilityNeeds.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -368,6 +370,16 @@ export default function PlanSafari() {
                 />
               </div>
             )}
+
+            <Field label="Accessibility needs">
+              <input
+                type="text"
+                value={accessibilityNeeds}
+                onChange={(e) => setAccessibilityNeeds(e.target.value)}
+                placeholder="Accessibility needs (optional)"
+                className="w-full bg-linen px-5 py-5 text-sm text-ink placeholder:text-ink/50 outline-none"
+              />
+            </Field>
 
             <button type="submit" disabled={submitting} className="btn-ochre disabled:opacity-60">
               {submitting ? "Sending…" : "Check Availability"}

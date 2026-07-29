@@ -28,6 +28,11 @@ export const whatWeHandle = [
       "International routing, timing that actually connects to your safari start, and a human to call if a leg gets delayed or cancelled — not a hold-music queue.",
   },
   {
+    title: "Visa & Entry Guidance",
+    description:
+      "Kenya moved to a fully digital Electronic Travel Authorization (eTA) system in 2024 — no more traditional visa. We walk you through the eTA application and timeline as part of planning your trip, so it's one less thing to research on your own.",
+  },
+  {
     title: "Luxury Safari Coordination",
     description:
       "Every lodge, camp, transfer, and game drive built into one itinerary, sequenced so travel days don't eat into game-viewing time.",

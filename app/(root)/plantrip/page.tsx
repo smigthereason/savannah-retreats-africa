@@ -1,6 +1,7 @@
 import PlanTripHero from "@/components/PlanTrip/PlanTripHero";
 import TripPlannerForm from "@/components/PlanTrip/TripPlannerForm";
 import WhyPlanWithUs from "@/components/PlanTrip/WhyPlanWithUs";
+import SecureYourVisit from "@/components/PlanTrip/SecureYourVisit";
 
 export const metadata = {
   title: "Plan Your Trip | Savannah Retreats Africa",
@@ -14,6 +15,7 @@ export default function PlanTripPage() {
       <PlanTripHero />
       <TripPlannerForm />
       <WhyPlanWithUs />
+      <SecureYourVisit />
     </main>
   );
 }

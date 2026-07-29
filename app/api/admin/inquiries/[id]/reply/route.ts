@@ -45,7 +45,8 @@ export async function POST(
     `*[_id == $id][0]{
       type, name, email, phone, message, reference,
       destinations, tier, dateStart, dateEnd, adults, children,
-      childrenAges, seniorAdults, destination, packageChoice, status
+      childrenAges, seniorAdults, destination, packageChoice,
+      accessibilityNeeds, businessName, serviceType, serviceLocation, status
     }`,
     { id }
   );

@@ -36,6 +36,7 @@ export default function ContactSection() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [accessibilityNeeds, setAccessibilityNeeds] = useState("");
 
   useEffect(() => {
     if (reference) {
@@ -57,6 +58,7 @@ export default function ContactSection() {
         reference: reference
           ? { refType: reference.type, label: reference.label, slug: reference.slug }
           : undefined,
+        accessibilityNeeds: accessibilityNeeds.trim() || undefined,
       });
       setSubmitted(true);
     } catch (err) {
@@ -197,6 +199,19 @@ export default function ContactSection() {
                     rows={5}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
+                    Accessibility or accommodation needs (optional)
+                  </span>
+                  <textarea
+                    rows={3}
+                    value={accessibilityNeeds}
+                    onChange={(e) => setAccessibilityNeeds(e.target.value)}
+                    placeholder="Mobility, dietary, medical, or anything else that would help us plan around"
                     className="mt-2 w-full border border-umber/15 bg-linen px-4 py-3 text-sm text-ink outline-none focus:border-ochre"
                   />
                 </label>

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeClient } from "@/lib/sanity/client";
 import { rateLimit, getClientIp } from "@/lib/rateLimit";
-import { sendMail, inquiryConfirmationEmail, newLeadAlertEmail } from "@/lib/mail";
+import { sendMail, inquiryConfirmationEmail, newLeadAlertEmail, partnerConfirmationEmail } from "@/lib/mail";
 
-const ALLOWED_TYPES = ["contact", "tripPlanner", "booking", "planSafari"];
+const ALLOWED_TYPES = ["contact", "tripPlanner", "booking", "planSafari", "partner"];
 
 // Simple, deliberately permissive email check — good enough to reject
 // garbage/typos without rejecting real addresses (full RFC 5322
@@ -17,6 +17,10 @@ const MAX_LENGTHS: Record<string, number> = {
   tier: 100,
   destination: 200,
   packageChoice: 200,
+  accessibilityNeeds: 1000,
+  businessName: 200,
+  serviceType: 100,
+  serviceLocation: 200,
 };
 
 function cappedString(value: unknown, field: keyof typeof MAX_LENGTHS) {
@@ -100,6 +104,10 @@ export async function POST(req: NextRequest) {
       seniorAdults: sanePartySize(body.seniorAdults),
       destination: cappedString(body.destination, "destination"),
       packageChoice: cappedString(body.packageChoice, "packageChoice"),
+      accessibilityNeeds: cappedString(body.accessibilityNeeds, "accessibilityNeeds"),
+      businessName: cappedString(body.businessName, "businessName"),
+      serviceType: cappedString(body.serviceType, "serviceType"),
+      serviceLocation: cappedString(body.serviceLocation, "serviceLocation"),
       submittedAt: new Date().toISOString(),
     };
 
@@ -113,12 +121,18 @@ export async function POST(req: NextRequest) {
       tripPlanner: "Trip Planning Request",
       booking: "Booking Request",
       planSafari: "Safari Search Enquiry",
+      partner: "Partner Inquiry",
     };
+    const isPartner = body.type === "partner";
     await Promise.allSettled([
       sendMail({
         to: email,
-        subject: `Re: ${typeSubjectLabel[body.type] || "Your Enquiry"} — Savannah Retreats Africa`,
-        html: inquiryConfirmationEmail(name, body.type),
+        subject: isPartner
+          ? "We've received your partnership inquiry — Savannah Retreats Africa"
+          : `Re: ${typeSubjectLabel[body.type] || "Your Enquiry"} — Savannah Retreats Africa`,
+        html: isPartner
+          ? partnerConfirmationEmail(name)
+          : inquiryConfirmationEmail(name, body.type),
       }),
       adminAlertTo
         ? sendMail({
@@ -141,6 +155,10 @@ export async function POST(req: NextRequest) {
               seniorAdults: doc.seniorAdults,
               destination: doc.destination,
               packageChoice: doc.packageChoice,
+              accessibilityNeeds: doc.accessibilityNeeds,
+              businessName: doc.businessName,
+              serviceType: doc.serviceType,
+              serviceLocation: doc.serviceLocation,
             }),
           })
         : Promise.resolve(),

@@ -17,6 +17,7 @@ const TYPE_LABELS: Record<Inquiry["type"], string> = {
   tripPlanner: "Trip Planner",
   booking: "Booking Request",
   planSafari: "Plan Safari",
+  partner: "Partner Inquiry",
 };
 
 const STATUS_COLORS: Record<Inquiry["status"], string> = {
@@ -64,6 +65,10 @@ const CSV_COLUMNS: (keyof Inquiry)[] = [
   "childrenAges",
   "seniorAdults",
   "packageChoice",
+  "accessibilityNeeds",
+  "businessName",
+  "serviceType",
+  "serviceLocation",
 ];
 
 function csvEscape(value: unknown) {
@@ -432,6 +437,27 @@ export default function InquiryDashboard({
                 </p>
               )}
 
+              {inquiry.businessName && (
+                <p className="mt-3 text-[12px] text-ink/70">
+                  <span className="text-ink/50">Business: </span>
+                  {inquiry.businessName}
+                </p>
+              )}
+
+              {inquiry.serviceType && (
+                <p className="mt-1 text-[12px] text-ink/70">
+                  <span className="text-ink/50">Service type: </span>
+                  {inquiry.serviceType}
+                </p>
+              )}
+
+              {inquiry.serviceLocation && (
+                <p className="mt-1 text-[12px] text-ink/70">
+                  <span className="text-ink/50">Location: </span>
+                  {inquiry.serviceLocation}
+                </p>
+              )}
+
               {inquiry.destination && (
                 <p className="mt-3 text-[12px] text-ink/70">
                   <span className="text-ink/50">Destination: </span>
@@ -457,6 +483,15 @@ export default function InquiryDashboard({
                 <p className="mt-4 border-t border-umber/10 pt-4 text-[13px] leading-relaxed text-ink">
                   {inquiry.message}
                 </p>
+              )}
+
+              {inquiry.accessibilityNeeds && (
+                <div className="mt-3 bg-ochre/10 px-3 py-2.5 text-[12px] leading-relaxed text-umber">
+                  <span className="font-semibold uppercase tracking-widest2 text-[10px] text-ochre">
+                    Accessibility needs
+                  </span>
+                  <p className="mt-1">{inquiry.accessibilityNeeds}</p>
+                </div>
               )}
 
               <div className="mt-6 flex items-center justify-between gap-4 border-t border-umber/10 pt-5">

@@ -8,6 +8,7 @@ export const navLinks = [
   { label: "Lodges & Camps", href: "/lodges" },
   { label: "Discover Kenya", href: "/discover" },
   { label: "Culture", href: "/culture" },
+  // { label: "Blog", href: "/blog" }, // page is fully built at app/(root)/blog — uncomment once there's real content to show (see lib/blog-data.ts)
   { label: "Contact", href: "/contact" },
 ];
 
@@ -118,6 +119,21 @@ export const experiences = [
     flip: false,
   },
 ];
+
+// Commented out on the homepage for now (see app/(root)/page.tsx) —
+// Emily Brown's quote was a placeholder, not a real customer
+// testimonial. Kept here, ready to swap in real content and
+// uncomment, rather than deleted.
+export const testimonial = {
+  eyebrow: "Testimonials",
+  headline: "What Travelers Say",
+  quote:
+    "Our guide knew the migration patterns better than anything we'd read beforehand, and the camp never once felt like a hotel. It felt like we were the only people in Kenya that week.",
+  name: "Emily Brown",
+  role: "Traveled to the Mara, 2025",
+  image:
+    "https://images.unsplash.com/photo-1611348586804-61bf6c080437?q=80&w=2400&auto=format&fit=crop",
+};
 
 export const journal = [
   {
