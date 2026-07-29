@@ -119,17 +119,6 @@ export const experiences = [
   },
 ];
 
-export const testimonial = {
-  eyebrow: "Testimonials",
-  headline: "What Travelers Say",
-  quote:
-    "Our guide knew the migration patterns better than anything we'd read beforehand, and the camp never once felt like a hotel. It felt like we were the only people in Kenya that week.",
-  name: "Emily Brown",
-  role: "Traveled to the Mara, 2025",
-  image:
-    "https://images.unsplash.com/photo-1611348586804-61bf6c080437?q=80&w=2400&auto=format&fit=crop",
-};
-
 export const journal = [
   {
     date: { month: "Aug", day: "14" },

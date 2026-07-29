@@ -1,8 +1,8 @@
 import Hero from "@/components/Landing-Page/Hero";
 import Intro from "@/components/Landing-Page/Intro";
 import PlanSafari from "@/components/Landing-Page/PlanSafari";
-import Testimonial from "@/components/Landing-Page/Testimonial";
 import Experiences from "@/components/Landing-Page/Experiences";
+import BigFiveVideography from "@/components/Landing-Page/BigFiveVideography";
 import KenyaGlance from "@/components/Landing-Page/KenyaGlance";
 import CultureTeaser from "@/components/Landing-Page/CultureTeaser";
 import DiscoverTeaser from "@/components/Landing-Page/DiscoverTeaser";
@@ -24,8 +24,8 @@ export default function Home() {
       <Hero />
       <Intro />
       <PlanSafari />
-      <Testimonial />
       <Experiences />
+      <BigFiveVideography />
       <KenyaGlance />
       <CultureTeaser />
       <DiscoverTeaser />
