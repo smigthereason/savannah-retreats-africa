@@ -21,7 +21,7 @@ export const inquiry = defineType({
           { title: "Trip Planner", value: "tripPlanner" },
           { title: "Booking Request (CTA)", value: "booking" },
           { title: "Plan Safari", value: "planSafari" },
-          { title: "Partner Inquiry", value: "partner" },
+          { title: "Engagement Inquiry", value: "partner" },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -103,18 +103,18 @@ export const inquiry = defineType({
     }),
     defineField({
       name: "businessName",
-      title: "Business Name (partner inquiries)",
+      title: "Business Name (engagement inquiries)",
       type: "string",
     }),
     defineField({
       name: "serviceType",
-      title: "Service Type (partner inquiries)",
+      title: "Service Type (engagement inquiries)",
       type: "string",
       description: "e.g. Accommodation, Transport, Tour Guiding, Activity/Experience, Local Knowledge",
     }),
     defineField({
       name: "serviceLocation",
-      title: "Service Location (partner inquiries)",
+      title: "Service Location (engagement inquiries)",
       type: "string",
     }),
 

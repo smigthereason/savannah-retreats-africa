@@ -31,7 +31,7 @@ const BENEFITS = [
   },
 ];
 
-export default function PartnersSection() {
+export default function EngageSection() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -71,12 +71,12 @@ export default function PartnersSection() {
     <section className="bg-linen w-full">
       <div className="section-pad mx-auto max-w-8xl py-24 md:py-28">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-[0.8fr_1.2fr]">
-          {/* Left: why partner with us */}
+          {/* Left: why engage with us */}
           <div>
-            <span className="eyebrow">Work With Us</span>
-            <h1 className="mt-4 font-display text-4xl text-umber md:text-5xl">
-              Partner With Savannah Retreats
-            </h1>
+            <span className="eyebrow">Engage With Us</span>
+            <h2 className="mt-4 font-display text-4xl text-umber md:text-5xl">
+              Work With Savannah Retreats
+            </h2>
             <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-ink">
               Every trip we build leans on people who actually know the
               ground — camp owners, drivers, guides, and locals who know
@@ -117,8 +117,8 @@ export default function PartnersSection() {
                   Thank you for reaching out.
                 </h2>
                 <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-ink">
-                  Our partnerships team will review your details and follow
-                  up if there's a fit for an upcoming trip.
+                  Our team will review your details and follow up if
+                  there's a fit for an upcoming trip.
                 </p>
               </div>
             ) : (
@@ -228,7 +228,7 @@ export default function PartnersSection() {
                 {error && <p className="text-[13px] text-red-600">{error}</p>}
 
                 <button type="submit" disabled={submitting} className="btn-ochre w-full disabled:opacity-60">
-                  {submitting ? "Sending…" : "Submit Partnership Inquiry"}
+                  {submitting ? "Sending…" : "Submit Inquiry"}
                 </button>
               </form>
             )}

@@ -1,7 +1,7 @@
-import { Plane, Compass, Users, Headphones } from "lucide-react";
+import { Plane, Stamp, Compass, Users, Headphones } from "lucide-react";
 import { whatWeHandle } from "@/lib/about-data";
 
-const ICONS = [Plane, Compass, Users, Headphones];
+const ICONS = [Plane, Stamp, Compass, Users, Headphones];
 
 export default function WhatWeHandle() {
   return (
@@ -16,7 +16,7 @@ export default function WhatWeHandle() {
           it's one team, one point of contact, and one standard of care.
         </p>
 
-        <div className="mt-14 grid grid-cols-1 gap-px bg-umber/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 gap-px bg-umber/10 sm:grid-cols-2 lg:grid-cols-5">
           {whatWeHandle.map((item, i) => {
             const Icon = ICONS[i];
             return (

@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       sendMail({
         to: email,
         subject: isPartner
-          ? "We've received your partnership inquiry — Savannah Retreats Africa"
+          ? "We've received your inquiry — Savannah Retreats Africa"
           : `Re: ${typeSubjectLabel[body.type] || "Your Enquiry"} — Savannah Retreats Africa`,
         html: isPartner
           ? partnerConfirmationEmail(name)

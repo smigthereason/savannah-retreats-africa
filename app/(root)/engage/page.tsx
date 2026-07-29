@@ -1,15 +1,17 @@
-import PartnersSection from "@/components/Partners/PartnersSection";
+import EngageHero from "@/components/Engage/EngageHero";
+import EngageSection from "@/components/Engage/EngageSection";
 
 export const metadata = {
-  title: "Partner With Us | Savannah Retreats Africa",
+  title: "Engage With Us | Savannah Retreats Africa",
   description:
     "For lodges, camps, guides, drivers, and local experience providers across Kenya who want to work with Savannah Retreats Africa.",
 };
 
-export default function PartnersPage() {
+export default function EngagePage() {
   return (
     <main className="relative overflow-hidden">
-      <PartnersSection />
+      <EngageHero />
+      <EngageSection />
     </main>
   );
 }

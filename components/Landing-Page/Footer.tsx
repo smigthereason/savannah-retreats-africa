@@ -38,10 +38,10 @@ export default function Footer() {
               ))}
               <li className="pt-2">
                 <Link
-                  href="/partners"
+                  href="/engage"
                   className="text-ochre hover:text-linen transition-colors"
                 >
-                  Partner With Us →
+                  Engage With Us →
                 </Link>
               </li>
             </ul>

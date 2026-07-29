@@ -276,7 +276,7 @@ const INQUIRY_TYPE_HEADINGS: Record<string, string> = {
   tripPlanner: "Trip Planning Request",
   booking: "Booking Request",
   planSafari: "Safari Search Enquiry",
-  partner: "Partner Inquiry",
+  partner: "Engagement Inquiry",
 };
 
 // ---------------------------------------------------------------------
@@ -453,7 +453,7 @@ export function partnerConfirmationEmail(name: string | undefined) {
     <p style="margin:0 0 16px;">
       Thank you for reaching out to Savannah Retreats Africa about
       working together. We've received your details and a member of
-      our partnerships team will review them and follow up within a
+      our team will review them and follow up within a
       few business days.
     </p>
     <p style="margin:0 0 16px;">
@@ -466,5 +466,5 @@ export function partnerConfirmationEmail(name: string | undefined) {
       <strong style="color:${COLORS.umber};">The Savannah Retreats Africa Team</strong>
     </p>
   `;
-  return emailShell({ eyebrow: "Re", heading: "Partnering With Us", bodyHtml: body });
+  return emailShell({ eyebrow: "Re", heading: "Engaging With Us", bodyHtml: body });
 }

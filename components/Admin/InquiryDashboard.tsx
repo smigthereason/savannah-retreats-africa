@@ -17,7 +17,7 @@ const TYPE_LABELS: Record<Inquiry["type"], string> = {
   tripPlanner: "Trip Planner",
   booking: "Booking Request",
   planSafari: "Plan Safari",
-  partner: "Partner Inquiry",
+  partner: "Engagement Inquiry",
 };
 
 const STATUS_COLORS: Record<Inquiry["status"], string> = {
