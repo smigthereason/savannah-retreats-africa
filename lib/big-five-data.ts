@@ -1,61 +1,62 @@
-// Placeholder content, same convention as lib/data.ts — structured so
-// it can be swapped for Sanity-fetched data later.
-//
-// `videoSrc` is deliberately left undefined for every entry — no real
-// video footage exists yet. The component gracefully falls back to a
-// static poster image when videoSrc is missing, so this ships safely
-// today and upgrades automatically the moment real clips are hosted
-// somewhere and their URLs added here. Do not point videoSrc at a
-// third-party/stock video URL without confirming its license first —
-// video licensing is generally stricter than the photo licensing
-// already documented at /credits.
-//
-// Poster images ARE real and verified (fetched directly from Unsplash,
-// not recalled from memory) — two of them are genuinely Kenya-located
-// shots (leopard: Masai Mara, rhino: Lake Nakuru National Park).
-
 export type BigFiveAnimal = {
   name: string;
+  latin: string;
   fact: string;
   whereToSpot: string;
+  bestTime: string;
   poster: string;
-  videoSrc?: string;
+  videoSrc: string;
 };
 
 export const bigFive: BigFiveAnimal[] = [
   {
     name: "Lion",
-    fact: "Africa's apex predator, living in prides of up to fifteen — most active at dawn and dusk, when the heat breaks.",
+    latin: "Panthera leo",
+    fact: "A pride can hold up to fifteen lions, but only the lionesses hunt as one. They fan out at dusk to corner prey the pride will share by rank.",
     whereToSpot: "Maasai Mara, Amboseli, Tsavo",
+    bestTime: "Dawn and dusk",
     poster:
       "https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1200&auto=format&fit=crop",
+    videoSrc: "/lion.mp4",
   },
   {
     name: "African Elephant",
-    fact: "Earth's largest land mammal, led by the oldest and most experienced female in a tight-knit matriarchal herd.",
+    latin: "Loxodonta africana",
+    fact: "The largest land animal on Earth travels in herds led by its oldest female. A matriarch who carries the memory of every waterhole for fifty miles.",
     whereToSpot: "Amboseli, Tsavo, Samburu",
+    bestTime: "Early morning",
     poster:
       "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?q=80&w=1200&auto=format&fit=crop",
+    videoSrc: "/elephant.mp4",
   },
   {
     name: "Cape Buffalo",
-    fact: "Often called the most unpredictable of the Big Five — herds can number in the hundreds, and a lone bull is one of Africa's most respected animals to encounter on foot.",
+    latin: "Syncerus caffer",
+    fact: "Herds run into the hundreds. It's the lone bull, cast out, unpredictable and unafraid of a lion pride, that guides give the widest berth.",
     whereToSpot: "Maasai Mara, Lake Nakuru",
+    bestTime: "Midmorning near water",
     poster:
       "https://images.unsplash.com/photo-1704805129310-a263e4a95947?q=80&w=1200&auto=format&fit=crop",
+    videoSrc: "/buffalo.mp4",
   },
   {
     name: "Leopard",
-    fact: "The most elusive Big Five sighting — solitary, superbly camouflaged, and as likely to be resting in a tree overhead as on the ground.",
+    latin: "Panthera pardus",
+    fact: "The Big Five's hardest sighting. Solitary and near-invisible against dry bush,it's as likely draped over a branch overhead as moving on the ground.",
     whereToSpot: "Maasai Mara, Samburu",
+    bestTime: "Night drives",
     poster:
       "https://images.unsplash.com/photo-1572978965590-7dd074d642c9?q=80&w=1200&auto=format&fit=crop",
+    videoSrc: "/leopard.mp4",
   },
   {
     name: "Rhinoceros",
-    fact: "Both black and white rhino are genuine conservation success stories in Kenya, recovering steadily after being pushed to the edge by poaching.",
+    latin: "Diceros bicornis / Ceratotherium simum",
+    fact: "Both black and white rhino were pushed to the edge by poaching.Their steady recovery here is one of Kenya's clearest conservation wins.",
     whereToSpot: "Lake Nakuru National Park",
+    bestTime: "Late afternoon",
     poster:
       "https://images.unsplash.com/photo-1523629104117-bd9583d1829b?q=80&w=1200&auto=format&fit=crop",
+    videoSrc: "/rhino.mp4",
   },
 ];

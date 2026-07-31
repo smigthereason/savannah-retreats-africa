@@ -153,7 +153,7 @@ export default function EngageSection() {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <label className="block">
                     <span className="text-[11px] uppercase tracking-widest2 text-ink/60">
-                      Phone (optional)
+                      Phone
                     </span>
                     <input
                       type="tel"
