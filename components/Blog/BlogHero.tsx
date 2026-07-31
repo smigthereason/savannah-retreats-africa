@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function BlogHero() {
   return (
-    <section className="bg-umber w-full">
-      <div className="section-pad mx-auto max-w-8xl py-28 md:py-32">
+    <section className="relative h-[100svh] min-h-[640px]  w-full  overflow-hidden bg-umber">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
         <span className="eyebrow !text-ochre">From the Savannah Retreats Team</span>
         <h1 className="mt-4 max-w-2xl font-display text-4xl text-linen md:text-6xl">
           Journal
