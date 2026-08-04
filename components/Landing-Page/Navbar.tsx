@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { navLinks } from "@/lib/data";
+import { navLinks, footer } from "@/lib/data";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -145,7 +145,7 @@ export default function Navbar() {
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <nav className="flex flex-col gap-1 px-8 pt-8 pb-8 flex-1 overflow-y-auto">
+        <nav className="flex flex-col gap-1 px-8 pt-8 pb-6 flex-1 overflow-y-auto">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -160,15 +160,37 @@ export default function Navbar() {
           <Link
             href="/plantrip"
             onClick={() => setMenuOpen(false)}
-            className="btn-ochre mt-8 justify-center text-center"
+            className="btn-ochre mt-6 justify-center text-center"
           >
             Plan a Trip
           </Link>
         </nav>
 
-        <p className="px-8 py-6 text-xs text-umber/40 uppercase tracking-widest2 shrink-0">
-          Savannah Retreats Africa
-        </p>
+        {/* ── Engage With Us Section ── */}
+        <div className="px-8 py-6 border-t border-umber/10 bg-linen shrink-0">
+          <Link
+            href="/engage"
+            onClick={() => setMenuOpen(false)}
+            className="block text-[11px] font-semibold uppercase tracking-widest2 text-ochre mb-3 hover:underline"
+          >
+            Engage With Us
+          </Link>
+          <div className="flex flex-col gap-2 text-xs text-umber/80">
+            <a
+              href={`tel:${footer.phone.replace(/[^+\d]/g, "")}`}
+              className="hover:text-ochre transition-colors"
+            >
+              {footer.phone}
+            </a>
+            <a
+              href={`mailto:${footer.email}`}
+              className="hover:text-ochre transition-colors"
+            >
+              {footer.email}
+            </a>
+            <p className="text-umber/60">{footer.address.join(", ")}</p>
+          </div>
+        </div>
       </div>
     </>
   );
