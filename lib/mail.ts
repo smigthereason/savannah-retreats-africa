@@ -277,6 +277,7 @@ const INQUIRY_TYPE_HEADINGS: Record<string, string> = {
   booking: "Booking Request",
   planSafari: "Safari Search Enquiry",
   partner: "Engagement Inquiry",
+  designJourney: "Design Your Journey",
 };
 
 // ---------------------------------------------------------------------
@@ -292,9 +293,19 @@ export type InquiryDetails = {
   email: string;
   phone?: string;
   message?: string;
+  sourcePath?: string;
+  sourceLabel?: string;
   reference?: { refType?: string; label?: string; slug?: string };
   destinations?: string[];
   tier?: string;
+  experiences?: string[];
+  travellerType?: string;
+  travelTiming?: string;
+  travelMonth?: string;
+  duration?: string;
+  budget?: string;
+  accommodationPreferences?: string[];
+  interests?: string[];
   dateStart?: string;
   dateEnd?: string;
   adults?: number;
@@ -314,6 +325,8 @@ function buildInquiryRows(details: InquiryDetails): Array<[string, string]> {
     type, name, email, phone, destination, destinations, tier,
     packageChoice, dateStart, dateEnd, adults, children, childrenAges,
     seniorAdults, reference, businessName, serviceType, serviceLocation,
+    sourcePath, sourceLabel, experiences, travellerType, travelTiming,
+    travelMonth, duration, budget, accommodationPreferences, interests,
   } = details;
 
   const rows: Array<[string, string]> = [
@@ -322,11 +335,22 @@ function buildInquiryRows(details: InquiryDetails): Array<[string, string]> {
     ["Email", email],
   ];
   if (phone) rows.push(["Phone", phone]);
+  if (sourcePath) rows.push(["Submitted From", sourceLabel ? `${sourceLabel} (${sourcePath})` : sourcePath]);
   if (businessName) rows.push(["Business", businessName]);
   if (serviceType) rows.push(["Service Type", serviceType]);
   if (serviceLocation) rows.push(["Location", serviceLocation]);
   if (destination) rows.push(["Destination", destination]);
   if (destinations?.length) rows.push(["Destinations", destinations.join(", ")]);
+  if (experiences?.length) rows.push(["Experiences", experiences.join(", ")]);
+  if (travellerType) rows.push(["Travelling As", travellerType]);
+  if (travelTiming) rows.push(["Travel Timing", travelTiming]);
+  if (travelMonth) rows.push(["Preferred Dates / Month", travelMonth]);
+  if (duration) rows.push(["Duration", duration]);
+  if (budget) rows.push(["Budget", budget]);
+  if (accommodationPreferences?.length) {
+    rows.push(["Accommodation", accommodationPreferences.join(", ")]);
+  }
+  if (interests?.length) rows.push(["Interests", interests.join(", ")]);
   if (tier) rows.push(["Tier", tier]);
   if (packageChoice) rows.push(["Package", packageChoice]);
   if (dateStart || dateEnd) {

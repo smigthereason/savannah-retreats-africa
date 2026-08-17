@@ -1,6 +1,14 @@
-import { Suspense } from "react";
 import ContactHero from "@/components/Contact/ContactHero";
-import ContactSection from "@/components/Contact/ContactSection";
+import DesignYourJourneyFunnel from "@/components/DesignYourJourney/DesignYourJourneyFunnel";
+
+// -------------------------------------------------------------------
+// ORIGINAL STANDARD CONTACT FORM
+// Kept here intentionally so it can be restored immediately after the
+// Design Your Journey user test.
+//
+// import { Suspense } from "react";
+// import ContactSection from "@/components/Contact/ContactSection";
+// -------------------------------------------------------------------
 
 export const metadata = {
   title: "Contact | Savannah Retreats Africa",
@@ -12,9 +20,23 @@ export default function ContactPage() {
   return (
     <main className="relative bg-linen">
       <ContactHero />
-      <Suspense fallback={null}>
-        <ContactSection />
-      </Suspense>
+
+      {/*
+        ==============================================================
+        ORIGINAL FORM — COMMENTED OUT FOR DESIGN YOUR JOURNEY TESTING
+        ==============================================================
+
+        <Suspense fallback={null}>
+          <ContactSection />
+        </Suspense>
+
+        To roll back:
+        1. Re-enable the Suspense and ContactSection imports above.
+        2. Uncomment this block.
+        3. Comment out <DesignYourJourneyFunnel /> below.
+      */}
+
+      <DesignYourJourneyFunnel />
     </main>
   );
 }

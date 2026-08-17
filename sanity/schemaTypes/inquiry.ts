@@ -22,6 +22,7 @@ export const inquiry = defineType({
           { title: "Booking Request (CTA)", value: "booking" },
           { title: "Plan Safari", value: "planSafari" },
           { title: "Engagement Inquiry", value: "partner" },
+          { title: "Design Your Journey", value: "designJourney" },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -52,6 +53,24 @@ export const inquiry = defineType({
     defineField({ name: "phone", title: "Phone", type: "string" }),
     defineField({ name: "message", title: "Message / Notes", type: "text" }),
 
+
+defineField({
+  name: "sourcePath",
+  title: "Origin Page Path",
+  type: "string",
+  readOnly: true,
+  description:
+    "Relative page path where the visitor submitted the enquiry, e.g. /contact or /lodges/example.",
+}),
+defineField({
+  name: "sourceLabel",
+  title: "Origin Page Label",
+  type: "string",
+  readOnly: true,
+  description:
+    "Browser page title captured at submission time. Used by the admin dashboard for readable page-source filters.",
+}),
+
     // ContactSection: pre-filled when arriving from a package or lodge page
     defineField({
       name: "reference",
@@ -73,7 +92,52 @@ export const inquiry = defineType({
     }),
     defineField({ name: "tier", title: "Comfort Tier", type: "string" }),
 
-    // Shared across TripPlannerForm / CTABooking / PlanSafari
+    // Design Your Journey funnel
+    defineField({
+      name: "experiences",
+      title: "Journey Experiences",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "travellerType",
+      title: "Traveller Type",
+      type: "string",
+    }),
+    defineField({
+      name: "travelTiming",
+      title: "Travel Timing",
+      type: "string",
+    }),
+    defineField({
+      name: "travelMonth",
+      title: "Preferred Travel Month / Dates",
+      type: "string",
+    }),
+    defineField({
+      name: "duration",
+      title: "Preferred Duration",
+      type: "string",
+    }),
+    defineField({
+      name: "budget",
+      title: "Journey Budget",
+      type: "string",
+    }),
+    defineField({
+      name: "accommodationPreferences",
+      title: "Accommodation Preferences",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "interests",
+      title: "Journey Interests",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+
+    // Shared across TripPlannerForm / CTABooking / PlanSafari / Design Your Journey
     defineField({ name: "dateStart", title: "Earliest Travel Date", type: "date" }),
     defineField({ name: "dateEnd", title: "Latest Travel Date", type: "date" }),
     defineField({ name: "adults", title: "Adults", type: "number" }),

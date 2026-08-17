@@ -43,10 +43,12 @@ export async function POST(
   // comes from Sanity.
   const inquiry = await writeClient.fetch(
     `*[_id == $id][0]{
-      type, name, email, phone, message, reference,
-      destinations, tier, dateStart, dateEnd, adults, children,
-      childrenAges, seniorAdults, destination, packageChoice,
-      accessibilityNeeds, businessName, serviceType, serviceLocation, status
+      type, name, email, phone, message, sourcePath, sourceLabel, reference,
+      destinations, tier, experiences, travellerType, travelTiming, travelMonth,
+      duration, budget, accommodationPreferences, interests,
+      dateStart, dateEnd, adults, children, childrenAges, seniorAdults,
+      destination, packageChoice, accessibilityNeeds, businessName,
+      serviceType, serviceLocation, status
     }`,
     { id }
   );
