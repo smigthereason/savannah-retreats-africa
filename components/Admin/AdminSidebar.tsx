@@ -204,8 +204,8 @@ function SidebarBody(props: AdminSidebarProps) {
 export default function AdminSidebar(props: AdminSidebarProps) {
   return (
     <>
-      <aside className="hidden w-[280px] shrink-0 border-r border-umber/10 bg-sand/70 lg:block">
-        <div className="sticky top-0 h-screen">
+      <aside className="hidden h-screen w-[280px] shrink-0 overflow-hidden border-r border-umber/10 bg-sand/70 lg:block">
+        <div className="h-full">
           <SidebarBody {...props} />
         </div>
       </aside>

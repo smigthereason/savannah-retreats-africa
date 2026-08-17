@@ -349,8 +349,8 @@ export default function InquiryDashboard({
       : "All inquiries";
 
   return (
-    <section className="min-h-screen bg-linen text-umber">
-      <div className="flex min-h-screen">
+    <section className="h-screen overflow-hidden bg-linen text-umber">
+      <div className="flex h-full overflow-hidden">
         <AdminSidebar
           mobileOpen={mobileMenuOpen}
           onCloseMobile={() => setMobileMenuOpen(false)}
@@ -363,7 +363,7 @@ export default function InquiryDashboard({
           onLogout={handleLogout}
         />
 
-        <main className="min-w-0 flex-1">
+        <main className="h-full min-w-0 flex-1 overflow-y-auto overscroll-contain">
           <header className="sticky top-0 z-40 flex h-[76px] items-center justify-between border-b border-umber/10 bg-linen/95 px-5 backdrop-blur sm:px-7 lg:px-10">
             <div className="flex min-w-0 items-center gap-3">
               <button

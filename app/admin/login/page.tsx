@@ -71,7 +71,7 @@ function LoginForm() {
   return (
     <main className="min-h-screen bg-linen">
       <div className="grid min-h-screen lg:grid-cols-[0.92fr_1.08fr]">
-        <section className="relative hidden overflow-hidden bg-acacia px-12 py-12 text-linen lg:flex lg:flex-col lg:justify-between xl:px-16 xl:py-14">
+        <section className="relative hidden overflow-hidden bg-umber px-12 py-12 text-linen lg:flex lg:flex-col lg:justify-between xl:px-16 xl:py-14">
           <Link href="/" className="flex w-fit items-center gap-3">
             <Image
               src="/admin-logo.png"
