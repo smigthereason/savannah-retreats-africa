@@ -68,7 +68,7 @@ export default function RootLayout({
     description: SITE_DESCRIPTION,
     address: {
       "@type": "PostalAddress",
-      addressRegion: "TX",
+      addressRegion: "WA",
       addressCountry: "US",
     },
     telephone: "+1-682-346-4863",

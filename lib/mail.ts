@@ -196,7 +196,7 @@ const LOGO_URL = `${SITE_URL}/logo-no-bg.png`;
 // area code) rather than a fabricated street/ZIP. Replace with the
 // real mailing address once confirmed — keep this in sync with
 // lib/data.ts's `footer` object and the JSON-LD in app/layout.tsx.
-const BUSINESS_ADDRESS = "Texas, United States";
+const BUSINESS_ADDRESS = "Spokane-Washington, United States";
 const BUSINESS_PHONE = "+1 (682) 346-4863";
 
 const COLORS = {
