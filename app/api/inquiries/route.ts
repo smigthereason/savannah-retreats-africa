@@ -141,6 +141,77 @@ function escapeHtml(value: unknown) {
     .replace(/'/g, "&#039;");
 }
 
+const EMAIL_SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://savannahretreatsafrica.com"
+).replace(/\/$/, "");
+
+const EMAIL_LOGO_URL = `${EMAIL_SITE_URL}/logo-no-bg.png`;
+
+function emailBrandHeader({
+  heading,
+  subtitle,
+}: {
+  heading: string;
+  subtitle?: string;
+}) {
+  return `
+    <tr>
+      <td
+        align="center"
+        style="
+          padding:36px 38px 38px;
+          background:#F7F4F0;
+          color:#3A322C;
+        "
+      >
+        <img
+          src="${escapeHtml(EMAIL_LOGO_URL)}"
+          alt="Savannah Retreats Africa"
+          width="210"
+          style="
+            display:block;
+            width:210px;
+            max-width:80%;
+            height:auto;
+            margin:0 auto;
+            border:0;
+            outline:none;
+            text-decoration:none;
+          "
+        />
+
+        <div
+          style="
+            margin-top:26px;
+            font-family:Georgia,'Times New Roman',serif;
+            font-size:34px;
+            line-height:42px;
+            font-weight:400;
+            color:#3A322C;
+          "
+        >
+          ${escapeHtml(heading)}
+        </div>
+
+        ${
+          subtitle
+            ? `<div
+                style="
+                  margin-top:12px;
+                  font-family:Arial,Helvetica,sans-serif;
+                  font-size:14px;
+                  line-height:22px;
+                  color:#3A322C;
+                "
+              >
+                ${escapeHtml(subtitle)}
+              </div>`
+            : ""
+        }
+      </td>
+    </tr>`;
+}
+
 function emailRow(label: string, value?: string | number) {
   if (value === undefined || value === null || String(value).trim() === "") return "";
   return `
@@ -168,9 +239,8 @@ function designJourneyAdminEmail(data: DesignJourneyEmailData) {
     .filter(Boolean)
     .join(" · ");
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  const adminButton = siteUrl
-    ? `<a href="${escapeHtml(siteUrl)}/admin" style="display:inline-block;background:#A3704C;color:#ffffff;text-decoration:none;padding:13px 22px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">View in admin</a>`
+  const adminButton = EMAIL_SITE_URL
+    ? `<a href="${escapeHtml(EMAIL_SITE_URL)}/admin" style="display:inline-block;background:#A3704C;color:#ffffff;text-decoration:none;padding:13px 22px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">View in admin</a>`
     : "";
 
   const received = new Date(data.submittedAt).toLocaleString("en-GB", {
@@ -185,14 +255,11 @@ function designJourneyAdminEmail(data: DesignJourneyEmailData) {
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F3EFE9;padding:32px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:680px;background:#ffffff;border:1px solid #E4DDD4;">
-            <tr>
-              <td style="padding:34px 38px 30px;background:#5B6B4A;color:#ffffff;">
-                <div style="font-size:11px;line-height:16px;letter-spacing:2.2px;text-transform:uppercase;color:#EFE9DF;">Savannah Retreats Africa</div>
-                <div style="margin-top:18px;font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:40px;">New Design Your Journey enquiry</div>
-                <div style="margin-top:12px;font-size:14px;line-height:22px;color:#F5F1EA;">A traveller has completed the Kenya journey discovery funnel.</div>
-              </td>
-            </tr>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:680px;background:#ffffff;border:1px solid #E4DDD4;border-collapse:collapse;">
+            ${emailBrandHeader({
+              heading: "New Design Your Journey enquiry",
+              subtitle: "A traveller has completed the Kenya journey discovery funnel.",
+            })}
 
             <tr>
               <td style="padding:32px 38px 8px;">
@@ -265,15 +332,12 @@ function designJourneyConfirmationEmail(name?: string) {
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#F3EFE9;padding:32px 12px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;background:#ffffff;border:1px solid #E4DDD4;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;background:#ffffff;border:1px solid #E4DDD4;border-collapse:collapse;">
+            ${emailBrandHeader({
+              heading: "Your Kenya journey is with us.",
+            })}
             <tr>
-              <td style="padding:34px 38px;background:#5B6B4A;color:#ffffff;">
-                <div style="font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:#EFE9DF;">Savannah Retreats Africa</div>
-                <div style="margin-top:18px;font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:40px;">Your Kenya journey is with us.</div>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:34px 38px 38px;">
+              <td style="padding:38px 42px 42px;">
                 <p style="margin:0;color:#3A322C;font-size:15px;line-height:25px;">${greeting}</p>
                 <p style="margin:18px 0 0;color:#4A433D;font-size:15px;line-height:26px;">Thank you for sharing how you want to experience Kenya. Your journey brief has reached our travel design team.</p>
                 <p style="margin:16px 0 0;color:#4A433D;font-size:15px;line-height:26px;">We&apos;ll review your preferences — the regions, pace, style of stay and experiences that matter to you — and reply with a thoughtful next step within 24 hours.</p>

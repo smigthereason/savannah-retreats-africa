@@ -191,12 +191,9 @@ function escapeHtml(value: string) {
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savannahretreatsafrica.com";
 const LOGO_URL = `${SITE_URL}/logo-no-bg.png`;
 
-// Full street address still being finalized — deliberately just
-// state/country (Texas, matching the business phone's Fort Worth/DFW
-// area code) rather than a fabricated street/ZIP. Replace with the
-// real mailing address once confirmed — keep this in sync with
-// lib/data.ts's `footer` object and the JSON-LD in app/layout.tsx.
-const BUSINESS_ADDRESS = "Spokane-Washington, United States";
+// Business contact details displayed in transactional email footers.
+// Keep these in sync with the website footer and structured metadata.
+const BUSINESS_ADDRESS = "Spokane, Washington, United States";
 const BUSINESS_PHONE = "+1 (682) 346-4863";
 
 const COLORS = {
@@ -386,6 +383,17 @@ function renderRowsTable(rows: Array<[string, string]>) {
   `;
 }
 
+function getDesignJourneyTravellerNote(message?: string): string | undefined {
+  if (!message) return undefined;
+
+  // Design Your Journey submissions store a generated summary in `message`.
+  // Only preserve the traveller's actual free-text note when replying.
+  const match = message.match(/(?:^|\s)Notes:\s*([\s\S]+)$/i);
+  const note = match?.[1]?.trim();
+
+  return note || undefined;
+}
+
 export function inquiryConfirmationEmail(name: string | undefined, type?: string) {
   const greeting = name ? escapeHtml(name) : "there";
   const heading = INQUIRY_TYPE_HEADINGS[type || ""] || "Your Enquiry";
@@ -416,6 +424,7 @@ export function adminReplyEmail({
   inquiry: InquiryDetails;
 }) {
   const greeting = inquiry.name ? escapeHtml(inquiry.name) : "there";
+
   // Preserve paragraph breaks from the admin's plain-text textarea input.
   const paragraphs = message
     .split(/\n{2,}/)
@@ -425,17 +434,36 @@ export function adminReplyEmail({
     )
     .join("");
 
+  const designJourneyNote =
+    inquiry.type === "designJourney"
+      ? getDesignJourneyTravellerNote(inquiry.message)
+      : undefined;
+
   const enquiryBox = `
     <div style="margin:0 0 24px; padding:16px 20px; background-color:${COLORS.linen}; border-left:3px solid ${COLORS.ochre};">
       <p style="margin:0 0 10px; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:${COLORS.ochre}; font-weight:bold; font-family: Arial, Helvetica, sans-serif;">
         Your Enquiry
       </p>
+
       ${renderRowsTable(buildInquiryRows(inquiry))}
+
       ${
-        inquiry.message
+        inquiry.type !== "designJourney" && inquiry.message
           ? `<p style="margin:12px 0 0; font-style:italic; color:${COLORS.ink};">"${escapeHtml(inquiry.message)}"</p>`
           : ""
       }
+
+      ${
+        designJourneyNote
+          ? `<div style="margin:14px 0 0; padding:12px 14px; background-color:#FFFFFF; border:1px solid rgba(58,50,44,0.08);">
+              <p style="margin:0 0 6px; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:${COLORS.ochre}; font-weight:bold; font-family:Arial,Helvetica,sans-serif;">
+                Traveller note
+              </p>
+              <p style="margin:0; color:${COLORS.ink};">${escapeHtml(designJourneyNote)}</p>
+            </div>`
+          : ""
+      }
+
       ${
         inquiry.accessibilityNeeds
           ? `<p style="margin:12px 0 0;"><strong>Accessibility needs:</strong> ${escapeHtml(inquiry.accessibilityNeeds)}</p>`
@@ -453,6 +481,7 @@ export function adminReplyEmail({
       <strong style="color:${COLORS.umber};">The Savannah Retreats Africa Team</strong>
     </p>
   `;
+
   return emailShell({ eyebrow: "Re", heading: "Your Enquiry", bodyHtml: body });
 }
 
