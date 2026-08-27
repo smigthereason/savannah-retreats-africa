@@ -1,5 +1,7 @@
 import ContactHero from "@/components/Contact/ContactHero";
 import DesignYourJourneyFunnel from "@/components/DesignYourJourney/DesignYourJourneyFunnel";
+import type { Metadata } from 'next';
+
 
 // -------------------------------------------------------------------
 // ORIGINAL STANDARD CONTACT FORM
@@ -10,7 +12,7 @@ import DesignYourJourneyFunnel from "@/components/DesignYourJourney/DesignYourJo
 // import ContactSection from "@/components/Contact/ContactSection";
 // -------------------------------------------------------------------
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Contact | Savannah Retreats Africa",
   description:
     "Get in touch with Savannah Retreats Africa — questions about a safari package, a property, or a custom Kenya itinerary.",

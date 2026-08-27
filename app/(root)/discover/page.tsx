@@ -7,8 +7,10 @@ import {
   forests,
   nationalParksAndReserves,
 } from "@/lib/discover-data";
+import type { Metadata } from 'next';
 
-export const metadata = {
+
+export const metadata: Metadata = {
   title: "Discover Kenya | Savannah Retreats Africa",
   description:
     "Mountains, hills, forests, and national parks beyond the main safari circuit — Mount Kenya, the Aberdare Range, Chyulu and Ngong Hills, Kakamega Forest, and more.",
