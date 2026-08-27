@@ -1,15 +1,51 @@
 // Placeholder content. Structured field-by-field so it can be swapped
 // for Sanity-fetched data later without reshaping the components.
 
+// export const navLinks = [
+//   { label: "Home", href: "/" },
+//   { label: "About", href: "/about" },
+//   { label: "Safari Packages", href: "/packages" },
+//   { label: "Lodges & Camps", href: "/lodges" },
+//   { label: "Discover Kenya", href: "/discover" },
+//   { label: "Culture", href: "/culture" },
+//   { label: "Gallery", href: "/gallery" },
+//   // { label: "Blog", href: "/blog" }, // page is fully built at app/(root)/blog — uncomment once there's real content to show (see lib/blog-data.ts)
+//   { label: "Contact", href: "/contact" },
+// ];
+//
 export const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Safari Packages", href: "/packages" },
-  { label: "Lodges & Camps", href: "/lodges" },
-  { label: "Discover Kenya", href: "/discover" },
-  { label: "Culture", href: "/culture" },
-  // { label: "Blog", href: "/blog" }, // page is fully built at app/(root)/blog — uncomment once there's real content to show (see lib/blog-data.ts)
-  { label: "Contact", href: "/contact" },
+  {
+    label: "About",
+    href: "/about",
+  },
+  {
+    label: "Safaris",
+    children: [
+      { label: "Safari Packages", href: "/packages" },
+      { label: "Lodges & Camps", href: "/lodges" },
+    ],
+  },
+  {
+    label: "Explore Kenya",
+    children: [
+      { label: "Discover Kenya", href: "/discover" },
+      { label: "Culture", href: "/culture" },
+    ],
+  },
+  {
+    label: "Gallery",
+    href: "/gallery",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
+  },
+
+  // Enable later when content is available:
+  // {
+  //   label: "Journal",
+  //   href: "/blog",
+  // },
 ];
 
 export const heroSlides = [

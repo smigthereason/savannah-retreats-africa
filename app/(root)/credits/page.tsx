@@ -1,4 +1,6 @@
-export const metadata = {
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: "Image Credits | Savannah Retreats Africa",
   description: "Attribution for photography used on this site under Creative Commons licenses.",
 };

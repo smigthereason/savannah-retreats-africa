@@ -1,0 +1,461 @@
+[
+  {
+    "fields": [
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Contact Form",
+              "value": "contact"
+            },
+            {
+              "title": "Trip Planner",
+              "value": "tripPlanner"
+            },
+            {
+              "title": "Booking Request (CTA)",
+              "value": "booking"
+            },
+            {
+              "title": "Plan Safari",
+              "value": "planSafari"
+            },
+            {
+              "title": "Engagement Inquiry",
+              "value": "partner"
+            },
+            {
+              "title": "Design Your Journey",
+              "value": "designJourney"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "contact",
+                  "tripPlanner",
+                  "booking",
+                  "planSafari",
+                  "partner",
+                  "designJourney"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "type",
+        "type": "string",
+        "title": "Source Form"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "New",
+              "value": "new"
+            },
+            {
+              "title": "Contacted",
+              "value": "contacted"
+            },
+            {
+              "title": "Booked",
+              "value": "booked"
+            },
+            {
+              "title": "Archived",
+              "value": "archived"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "new",
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "title": "Full Name"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "name": "phone",
+        "type": "string"
+      },
+      {
+        "name": "message",
+        "type": "text",
+        "title": "Message / Notes"
+      },
+      {
+        "description": "Relative page path where the visitor submitted the enquiry, e.g. /contact or /lodges/example.",
+        "readOnly": true,
+        "name": "sourcePath",
+        "type": "string",
+        "title": "Origin Page Path"
+      },
+      {
+        "description": "Browser page title captured at submission time. Used by the admin dashboard for readable page-source filters.",
+        "readOnly": true,
+        "name": "sourceLabel",
+        "type": "string",
+        "title": "Origin Page Label"
+      },
+      {
+        "fields": [
+          {
+            "name": "refType",
+            "type": "string",
+            "title": "Type"
+          },
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "slug",
+            "type": "string"
+          }
+        ],
+        "name": "reference",
+        "type": "object"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "destinations",
+        "type": "array",
+        "title": "Destinations (multi-select)"
+      },
+      {
+        "name": "tier",
+        "type": "string",
+        "title": "Comfort Tier"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "experiences",
+        "type": "array",
+        "title": "Journey Experiences"
+      },
+      {
+        "name": "travellerType",
+        "type": "string"
+      },
+      {
+        "name": "travelTiming",
+        "type": "string"
+      },
+      {
+        "name": "travelMonth",
+        "type": "string",
+        "title": "Preferred Travel Month / Dates"
+      },
+      {
+        "name": "duration",
+        "type": "string",
+        "title": "Preferred Duration"
+      },
+      {
+        "name": "budget",
+        "type": "string",
+        "title": "Journey Budget"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "accommodationPreferences",
+        "type": "array"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "interests",
+        "type": "array",
+        "title": "Journey Interests"
+      },
+      {
+        "name": "dateStart",
+        "type": "date",
+        "title": "Earliest Travel Date"
+      },
+      {
+        "name": "dateEnd",
+        "type": "date",
+        "title": "Latest Travel Date"
+      },
+      {
+        "name": "adults",
+        "type": "number"
+      },
+      {
+        "name": "children",
+        "type": "number"
+      },
+      {
+        "description": "One entry per child, in order. Needed for park entry rates, kids' programs, and lodge age policies.",
+        "of": [
+          {
+            "type": "number"
+          }
+        ],
+        "name": "childrenAges",
+        "type": "array",
+        "title": "Children's Ages"
+      },
+      {
+        "description": "How many of the adults above are 65 or older — helps plan pacing/accessibility.",
+        "name": "seniorAdults",
+        "type": "number",
+        "title": "Adults Aged 65+"
+      },
+      {
+        "name": "destination",
+        "type": "string",
+        "title": "Destination (single)"
+      },
+      {
+        "name": "packageChoice",
+        "type": "string",
+        "title": "Package Type"
+      },
+      {
+        "description": "Mobility, dietary, medical, or other accommodation needs shared by the traveler.",
+        "name": "accessibilityNeeds",
+        "type": "text",
+        "title": "Accessibility / Accommodation Needs"
+      },
+      {
+        "name": "businessName",
+        "type": "string",
+        "title": "Business Name (engagement inquiries)"
+      },
+      {
+        "description": "e.g. Accommodation, Transport, Tour Guiding, Activity/Experience, Local Knowledge",
+        "name": "serviceType",
+        "type": "string",
+        "title": "Service Type (engagement inquiries)"
+      },
+      {
+        "name": "serviceLocation",
+        "type": "string",
+        "title": "Service Location (engagement inquiries)"
+      },
+      {
+        "name": "submittedAt",
+        "type": "datetime"
+      }
+    ],
+    "name": "inquiry",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "A short internal/display title for this media item.",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "initialValue": "image",
+        "options": {
+          "layout": "radio",
+          "list": [
+            {
+              "title": "Image",
+              "value": "image"
+            },
+            {
+              "title": "Video",
+              "value": "video"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "image",
+                  "video"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "mediaType",
+        "type": "string",
+        "title": "Media type"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "hidden": "conditional",
+        "name": "image",
+        "type": "image"
+      },
+      {
+        "options": {
+          "accept": "video/mp4,video/quicktime,video/webm"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "hidden": "conditional",
+        "name": "video",
+        "type": "file"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 180
+              }
+            ]
+          }
+        ],
+        "description": "Describe the image for accessibility. Keep it concise and factual.",
+        "hidden": "conditional",
+        "name": "altText",
+        "type": "string",
+        "title": "Alternative text"
+      },
+      {
+        "rows": 3,
+        "name": "caption",
+        "type": "text"
+      },
+      {
+        "description": "Optional location, lodge, park, or region shown with the media.",
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "initialValue": true,
+        "description": "Images with this enabled appear on /gallery. Videos are stored for future use and are not shown on the gallery page yet.",
+        "hidden": "conditional",
+        "name": "showInGallery",
+        "type": "boolean",
+        "title": "Show in website gallery"
+      },
+      {
+        "options": {
+          "layout": "radio",
+          "list": [
+            {
+              "title": "Portrait / mobile",
+              "value": "portrait"
+            },
+            {
+              "title": "Landscape / desktop",
+              "value": "landscape"
+            },
+            {
+              "title": "Square",
+              "value": "square"
+            }
+          ]
+        },
+        "description": "Helps us decide later where portrait/mobile and landscape videos should be used.",
+        "hidden": "conditional",
+        "name": "videoOrientation",
+        "type": "string",
+        "title": "Video orientation"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ]
+          }
+        ],
+        "description": "Lower numbers appear first. Leave blank to fall back to newest-first ordering.",
+        "name": "sortOrder",
+        "type": "number",
+        "title": "Sort order"
+      }
+    ],
+    "name": "galleryMedia",
+    "type": "document"
+  }
+]

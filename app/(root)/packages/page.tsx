@@ -3,8 +3,10 @@ import PackagesHero from "@/components/Packages/PackagesHero";
 import PackageBrowser from "@/components/Packages/PackageBrowser";
 import PricingTiers from "@/components/Packages/PricingTiers";
 import PackageFAQ from "@/components/Packages/PackageFAQ";
+import type { Metadata } from 'next';
 
-export const metadata = {
+
+export const metadata: Metadata = {
   title: "Safari Packages | Savannah Retreats Africa",
   description:
     "Six curated Kenya safari itineraries across the Maasai Mara, Amboseli, the Rift Valley, and the coast — each with a private guide and vehicle from first night to last.",

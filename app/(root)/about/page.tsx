@@ -3,8 +3,10 @@ import BridgeSection from "@/components/About/BridgeSection";
 import WhatWeHandle from "@/components/About/WhatWeHandle";
 import WhyUsBased from "@/components/About/WhyUsBased";
 import ClosingStatement from "@/components/About/ClosingStatement";
+import type { Metadata } from 'next';
 
-export const metadata = {
+
+export const metadata: Metadata = {
   title: "About Us | Savannah Retreats Africa",
   description:
     "Savannah Retreats Africa is a US-based safari planning team bridging American travelers to Kenya — handling flights, luxury safari coordination, trusted local guiding, and 24/7 support.",
