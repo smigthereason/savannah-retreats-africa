@@ -7,3 +7,5 @@ export { default as SwahiliImage2 } from "./Swahili_New.jpg";
 export { default as MatHeadline } from "./MatHeadline.jpeg";
 export { default as Logo } from "./logo.jpg";
 export { default as Family } from "./Family.jpg";
+export { default as Logo2 } from "./admin-logo.png";
+export { default as GalleryHero1 } from "./ZebraHero.jpg";

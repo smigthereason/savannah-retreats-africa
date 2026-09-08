@@ -25,26 +25,45 @@ Open http://localhost:3000.
   `inquiry` document (`sanity/schemaTypes/inquiry.ts`). `app/admin`
   reads them back into a small CRM-style dashboard.
 - **Sanity Studio** is live at `/studio`, gated by Sanity's own login.
-- **Admin dashboard** is live at `/admin`, gated by a single shared
-  password (`ADMIN_PASSWORD`) — see `middleware.ts`. This is a
-  single-operator site lock, not a multi-user account system.
+- **Admin dashboard** is live at `/admin` and uses Google OAuth for staff
+  authentication. Access is limited by `ADMIN_ALLOWED_EMAILS` and/or the
+  optional `ADMIN_ALLOWED_GOOGLE_DOMAIN`. The signed session stores the
+  Google account identity so every portal reply can be attributed to the
+  individual staff member who sent it.
 - **No payment processor, no customer accounts.** Confirmed absent, not
   just unbuilt — see the audit report for how that was verified.
 - **Transactional email** goes through the `info@savannahretreatsafrica.com`
-  mailbox via SMTP (`lib/mail.ts`, using Namecheap Private Email) — an
-  inquiry confirmation to the customer and a new-lead alert to
-  `ADMIN_ALERT_EMAIL`. If the `SMTP_*` vars aren't set, sending is
-  skipped (logged, not thrown) so the rest of the flow still works.
+  mailbox via SMTP (`lib/mail.ts`, using Namecheap Private Email). Admin
+  replies continue to use that official company mailbox as the From address,
+  while Sanity stores a `replyHistory` audit trail with the authenticated
+  staff member, subject, message and timestamp. The customer-facing reply
+  signature also shows the staff member's name.
 
 ## Environment variables
 
 See `.env.example` for the full list and where to get each value.
 Required at minimum for `/admin` and inquiry submission to work:
 `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`,
-`SANITY_API_TOKEN`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`.
+`SANITY_API_TOKEN`, `ADMIN_SESSION_SECRET`, `GOOGLE_CLIENT_ID`,
+`GOOGLE_CLIENT_SECRET`, plus at least one of `ADMIN_ALLOWED_EMAILS` or
+`ADMIN_ALLOWED_GOOGLE_DOMAIN`.
+
+For Google Cloud, create/use a **Web application** OAuth client and add these
+Authorized redirect URIs as required by your environments:
+
+```text
+https://savannahretreatsafrica.com/api/admin/auth/google/callback
+http://localhost:3000/api/admin/auth/google/callback
+```
+
+The production URI must also be set as `GOOGLE_OAUTH_REDIRECT_URI` (or the
+application will derive the same URI from the request origin). Only the
+`openid email profile` scopes are requested; Gmail access is not required.
+
 Email (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`,
-`ADMIN_ALERT_EMAIL`) is optional but recommended before sending real
-customers to the forms.
+`ADMIN_ALERT_EMAIL`) should remain configured for the existing Namecheap
+Private Email mailbox so customer responses continue to come from
+`info@savannahretreatsafrica.com`.
 
 ## Design tokens
 
@@ -65,9 +84,9 @@ Fonts: **Fraunces** (display/headlines) + **Inter** (body, nav, eyebrows).
 app/
   (root)/           — public pages: home, about, packages, lodges,
                        culture, contact, plantrip
-  admin/             — password-gated inquiry dashboard + login
+  admin/             — Google-authenticated inquiry dashboard + login
   api/inquiries/     — public POST endpoint, writes to Sanity + sends email
-  api/admin/         — login/logout/status-update, gated by middleware.ts
+  api/admin/         — Google OAuth, logout, status and reply endpoints
   studio/            — embedded Sanity Studio
 components/
   Landing-Page/       — homepage sections (Navbar, Hero, CTABooking, etc.)
@@ -101,3 +120,37 @@ lib/
   headers are set) — needs live testing against `/studio` before adding.
 - Sanity dataset visibility (public vs. private) should be confirmed in
   the Sanity project dashboard — see the audit report.
+
+## Admin identity + email audit model
+
+Google is used for **staff authentication only**. The portal does not request
+Gmail scopes and does not need Gmail delegation or a service account. This is
+intentional because the current shared mailbox is hosted by Namecheap Private
+Email, not Google Workspace.
+
+When an authenticated staff member replies from `/admin`:
+
+1. The message is sent over the existing Namecheap SMTP connection from
+   `info@savannahretreatsafrica.com`.
+2. The email signature shows the authenticated staff member's display name.
+3. Sanity appends an immutable-style `replyHistory` entry containing the
+   staff Google account ID/email/name, subject, body, timestamp and mailbox.
+4. The admin drawer displays that reply history so the team can see who
+   replied and what was sent.
+
+If the mailbox is later migrated to Google Workspace, Gmail delegation can be
+considered separately. It is not required for the current architecture.
+
+## Sanity migration for existing Design Your Journey notes
+
+The schema now has a dedicated `additionalNotes` field for the final
+"Anything else we should know?" answer. New submissions populate it
+automatically. Existing Design Your Journey documents can be backfilled with:
+
+```bash
+node --env-file=.env.local scripts/migrate-inquiry-additional-notes.mjs
+```
+
+The migration only patches Design Your Journey documents where
+`additionalNotes` is missing and extracts the legacy `Notes:` value from the
+generated message summary.

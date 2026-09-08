@@ -52,6 +52,13 @@ export const inquiry = defineType({
     }),
     defineField({ name: "phone", title: "Phone", type: "string" }),
     defineField({ name: "message", title: "Message / Notes", type: "text" }),
+    defineField({
+      name: "additionalNotes",
+      title: "Anything Else / Traveller Notes",
+      type: "text",
+      description:
+        "Free-text notes entered by the traveller, including the final 'Anything else we should know?' step in Design Your Journey.",
+    }),
 
 
 defineField({
@@ -180,6 +187,53 @@ defineField({
       name: "serviceLocation",
       title: "Service Location (engagement inquiries)",
       type: "string",
+    }),
+
+
+    defineField({
+      name: "replyHistory",
+      title: "Reply History",
+      type: "array",
+      readOnly: true,
+      description:
+        "Audit trail of replies sent from the admin portal. The customer-facing From address remains the company mailbox; sentBy records the authenticated staff member.",
+      of: [
+        {
+          type: "object",
+          name: "reply",
+          fields: [
+            { name: "sentAt", title: "Sent At", type: "datetime" },
+            { name: "subject", title: "Subject", type: "string" },
+            { name: "message", title: "Message", type: "text" },
+            { name: "fromAddress", title: "Company Mailbox", type: "string" },
+            { name: "archived", title: "Archived to Sent Folder", type: "boolean" },
+            {
+              name: "sentBy",
+              title: "Sent By",
+              type: "object",
+              fields: [
+                { name: "sub", title: "Google Account ID", type: "string" },
+                { name: "email", title: "Staff Email", type: "string" },
+                { name: "name", title: "Staff Name", type: "string" },
+                { name: "picture", title: "Profile Picture URL", type: "url" },
+              ],
+            },
+          ],
+          preview: {
+            select: {
+              title: "subject",
+              staff: "sentBy.name",
+              sentAt: "sentAt",
+            },
+            prepare({ title, staff, sentAt }: { title?: string; staff?: string; sentAt?: string }) {
+              return {
+                title: title || "Reply",
+                subtitle: [staff, sentAt].filter(Boolean).join(" · "),
+              };
+            },
+          },
+        },
+      ],
     }),
 
     defineField({

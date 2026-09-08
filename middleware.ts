@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ADMIN_SESSION_COOKIE,
+  readAdminSessionToken,
+} from "@/lib/admin/session";
 
-const ADMIN_COOKIE = "sra_admin_session";
-
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isAdminPage = pathname.startsWith("/admin") && pathname !== "/admin/login";
@@ -12,12 +14,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = req.cookies.get(ADMIN_COOKIE)?.value;
+  const sessionToken = req.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+  const session = await readAdminSessionToken(sessionToken);
 
-  if (!session || session !== process.env.ADMIN_SESSION_SECRET) {
+  if (!session) {
     if (isAdminApi) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
     const loginUrl = new URL("/admin/login", req.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);

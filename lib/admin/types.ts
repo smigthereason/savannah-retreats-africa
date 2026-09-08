@@ -18,6 +18,22 @@ export const INQUIRY_STATUS_META = {
 
 export type InquiryStatus = keyof typeof INQUIRY_STATUS_META;
 
+export type InquiryReply = {
+  _key?: string;
+  _type?: "reply";
+  sentAt: string;
+  subject: string;
+  message: string;
+  fromAddress?: string;
+  archived?: boolean;
+  sentBy: {
+    sub: string;
+    email: string;
+    name: string;
+    picture?: string;
+  };
+};
+
 export type Inquiry = {
   _id: string;
   _createdAt: string;
@@ -28,6 +44,8 @@ export type Inquiry = {
   email: string;
   phone?: string;
   message?: string;
+  additionalNotes?: string;
+  replyHistory?: InquiryReply[];
 
   // Where the submission actually happened. New enquiries populate these
   // automatically through lib/submitInquiry.ts.

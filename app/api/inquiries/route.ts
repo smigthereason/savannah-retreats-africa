@@ -393,6 +393,10 @@ export async function POST(req: NextRequest) {
       email,
       phone: cappedString(body.phone, "phone"),
       message,
+      additionalNotes:
+        body.type === "designJourney"
+          ? cappedString(body.message, "message")
+          : cappedString(body.additionalNotes, "message"),
       sourcePath: saneSourcePath(body.sourcePath),
       sourceLabel: cappedString(body.sourceLabel, "sourceLabel"),
       reference:
