@@ -290,6 +290,7 @@ export type InquiryDetails = {
   email: string;
   phone?: string;
   message?: string;
+  additionalNotes?: string;
   sourcePath?: string;
   sourceLabel?: string;
   reference?: { refType?: string; label?: string; slug?: string };
@@ -419,9 +420,11 @@ export function inquiryConfirmationEmail(name: string | undefined, type?: string
 export function adminReplyEmail({
   message,
   inquiry,
+  staffName,
 }: {
   message: string;
   inquiry: InquiryDetails;
+  staffName: string;
 }) {
   const greeting = inquiry.name ? escapeHtml(inquiry.name) : "there";
 
@@ -436,7 +439,7 @@ export function adminReplyEmail({
 
   const designJourneyNote =
     inquiry.type === "designJourney"
-      ? getDesignJourneyTravellerNote(inquiry.message)
+      ? inquiry.additionalNotes || getDesignJourneyTravellerNote(inquiry.message)
       : undefined;
 
   const enquiryBox = `
@@ -478,7 +481,8 @@ export function adminReplyEmail({
     ${enquiryBox}
     <p style="margin:24px 0 0;">
       Warm regards,<br/>
-      <strong style="color:${COLORS.umber};">The Savannah Retreats Africa Team</strong>
+      <strong style="color:${COLORS.umber};">${escapeHtml(staffName)}</strong><br/>
+      <span style="font-size:12px; color:${COLORS.ink};">Savannah Retreats Africa · Authorized staff member</span>
     </p>
   `;
 

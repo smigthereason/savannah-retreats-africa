@@ -5,9 +5,14 @@ import {
   adminReplyEmail,
   type InquiryDetails,
 } from "@/lib/mail";
+import {
+  ADMIN_SESSION_COOKIE,
+  readAdminSessionToken,
+} from "@/lib/admin/session";
 
-// Auth for this route is handled by proxy/middleware, which gates
-// /api/admin/inquiries/* before this handler runs.
+// Middleware protects /api/admin/inquiries/*, but this handler reads the
+// signed session again because the authenticated Google identity becomes the
+// immutable `sentBy` audit record for each reply.
 
 type ReplyInquiry = InquiryDetails & {
   _id: string;
@@ -15,18 +20,8 @@ type ReplyInquiry = InquiryDetails & {
   status?: string;
 };
 
-/**
- * Resolve an inquiry by its exact Sanity document ID.
- *
- * `getDocument()` is used instead of a GROQ query here so the reply endpoint
- * does not depend on query perspective when resolving a single document.
- *
- * The fallback also supports a draft/published counterpart if an admin view
- * ever receives a draft id.
- */
 async function getInquiryById(id: string): Promise<ReplyInquiry | null> {
   const normalizedId = decodeURIComponent(id).trim();
-
   if (!normalizedId) return null;
 
   const candidateIds = normalizedId.startsWith("drafts.")
@@ -35,10 +30,7 @@ async function getInquiryById(id: string): Promise<ReplyInquiry | null> {
 
   for (const candidateId of candidateIds) {
     const document = await writeClient.getDocument<ReplyInquiry>(candidateId);
-
-    if (document?._type === "inquiry") {
-      return document;
-    }
+    if (document?._type === "inquiry") return document;
   }
 
   return null;
@@ -48,6 +40,14 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const actor = await readAdminSessionToken(
+    req.cookies.get(ADMIN_SESSION_COOKIE)?.value,
+  );
+
+  if (!actor) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { id } = await params;
 
   let subject: unknown;
@@ -98,10 +98,6 @@ export async function POST(
   }
 
   if (!inquiry) {
-    console.warn("[admin-reply] Inquiry document not found:", {
-      requestedId: id,
-    });
-
     return NextResponse.json(
       { error: "Inquiry not found. Refresh the admin page and try again." },
       { status: 404 },
@@ -109,23 +105,21 @@ export async function POST(
   }
 
   if (!inquiry.email || typeof inquiry.email !== "string") {
-    console.warn("[admin-reply] Inquiry has no recipient email:", {
-      requestedId: id,
-      resolvedId: inquiry._id,
-    });
-
     return NextResponse.json(
       { error: "This inquiry does not have a valid email address." },
       { status: 422 },
     );
   }
 
+  const cleanSubject = subject.trim();
+  const cleanMessage = message.trim();
   const result = await sendReplyAndArchive({
     to: inquiry.email.trim(),
-    subject: subject.trim(),
+    subject: cleanSubject,
     html: adminReplyEmail({
-      message: message.trim(),
+      message: cleanMessage,
       inquiry,
+      staffName: actor.name,
     }),
   });
 
@@ -149,26 +143,50 @@ export async function POST(
     );
   }
 
-  // Sending a reply means contact has been made. Do not downgrade an inquiry
-  // that is already further along in the workflow.
-  if (inquiry.status !== "booked" && inquiry.status !== "archived") {
-    try {
-      await writeClient
-        .patch(inquiry._id)
-        .set({ status: "contacted" })
-        .commit();
-    } catch (error) {
-      // The email has already sent successfully, so a status-update failure
-      // must not incorrectly tell the admin that the reply failed.
-      console.error("[admin-reply] Reply sent but status update failed:", {
-        inquiryId: inquiry._id,
-        error,
-      });
+  const reply = {
+    _key: crypto.randomUUID(),
+    _type: "reply",
+    sentAt: new Date().toISOString(),
+    subject: cleanSubject,
+    message: cleanMessage,
+    fromAddress: process.env.SMTP_USER || "info@savannahretreatsafrica.com",
+    archived: result.archived,
+    sentBy: {
+      sub: actor.sub,
+      email: actor.email,
+      name: actor.name,
+      ...(actor.picture ? { picture: actor.picture } : {}),
+    },
+  };
+
+  let auditSaved = true;
+
+  try {
+    const patch = writeClient
+      .patch(inquiry._id)
+      .setIfMissing({ replyHistory: [] })
+      .append("replyHistory", [reply]);
+
+    if (inquiry.status !== "booked" && inquiry.status !== "archived") {
+      patch.set({ status: "contacted" });
     }
+
+    await patch.commit();
+  } catch (error) {
+    auditSaved = false;
+    // The SMTP transaction has already completed. Do not claim the reply
+    // failed, but surface the audit problem to the UI and server logs.
+    console.error("[admin-reply] Reply sent but audit record failed:", {
+      inquiryId: inquiry._id,
+      actor: actor.email,
+      error,
+    });
   }
 
   return NextResponse.json({
     ok: true,
     archived: result.archived,
+    auditSaved,
+    reply,
   });
 }

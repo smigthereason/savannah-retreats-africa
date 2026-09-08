@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:inquiry-notes": "node scripts/migrate-inquiry-additional-notes.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",

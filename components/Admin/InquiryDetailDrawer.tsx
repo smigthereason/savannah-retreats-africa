@@ -8,7 +8,6 @@ import {
   Clipboard,
   ExternalLink,
   Mail,
-  MapPin,
   Phone,
   Send,
   Users,
@@ -17,6 +16,7 @@ import {
 import {
   INQUIRY_TYPE_META,
   type Inquiry,
+  type InquiryReply,
   type InquiryStatus,
 } from "@/lib/admin/types";
 import {
@@ -156,6 +156,7 @@ type InquiryDetailDrawerProps = {
   onClose: () => void;
   onStatusChange: (id: string, status: InquiryStatus) => Promise<boolean>;
   onStatusChangedLocally: (id: string, status: InquiryStatus) => void;
+  onReplyRecorded: (id: string, reply: InquiryReply) => void;
 };
 
 export default function InquiryDetailDrawer({
@@ -163,6 +164,7 @@ export default function InquiryDetailDrawer({
   onClose,
   onStatusChange,
   onStatusChangedLocally,
+  onReplyRecorded,
 }: InquiryDetailDrawerProps) {
   const [replyOpen, setReplyOpen] = useState(false);
   const [replySubject, setReplySubject] = useState(
@@ -215,13 +217,16 @@ export default function InquiryDetailDrawer({
   );
 
   const displayMessage = useMemo(() => {
-    if (!inquiry?.message) return undefined;
+    if (!inquiry) return undefined;
+    if (inquiry.additionalNotes) return inquiry.additionalNotes;
+    if (!inquiry.message) return undefined;
 
     if (
       inquiry.type === "designJourney" &&
       inquiry.message.startsWith("DESIGN YOUR JOURNEY")
     ) {
-      return undefined;
+      const match = inquiry.message.match(/(?:^|\n)Notes:\s*([\s\S]+)$/i);
+      return match?.[1]?.trim() || undefined;
     }
 
     return inquiry.message;
@@ -315,10 +320,16 @@ export default function InquiryDetailDrawer({
         onStatusChangedLocally(inquiryId, "contacted");
       }
 
+      if (data.auditSaved !== false && data.reply) {
+        onReplyRecorded(inquiryId, data.reply as InquiryReply);
+      }
+
       setReplySuccess(
-        data.archived === false
-          ? "Reply sent. The Sent-folder archive could not be confirmed."
-          : "Reply sent successfully.",
+        data.auditSaved === false
+          ? "Reply sent, but the staff audit entry could not be saved. Check server logs."
+          : data.archived === false
+            ? "Reply sent and attributed to your account. The Sent-folder archive could not be confirmed."
+            : "Reply sent and recorded under your staff account.",
       );
       setReplyOpen(false);
     } catch (err) {
@@ -420,27 +431,6 @@ export default function InquiryDetailDrawer({
               {INQUIRY_TYPE_META[inquiry.type].label}
             </DetailRow>
 
-            {inquiry.sourcePath ? (
-              <DetailRow label="Page">
-                <span className="inline-flex min-w-0 items-start gap-2">
-                  <MapPin size={14} className="mt-1 shrink-0 text-ochre" />
-                  <span className="min-w-0">
-                    <span className="block">
-                      {inquiry.sourceLabel || inquiry.sourcePath}
-                    </span>
-                    <span className="block break-all font-mono text-[10px] text-ink/40">
-                      {inquiry.sourcePath}
-                    </span>
-                  </span>
-                </span>
-              </DetailRow>
-            ) : (
-              <DetailRow label="Page">
-                <span className="text-ink/40">
-                  Not captured for this older enquiry.
-                </span>
-              </DetailRow>
-            )}
 
             {inquiry.reference ? (
               <DetailRow label={inquiry.reference.refType || "Reference"}>
@@ -561,6 +551,45 @@ export default function InquiryDetailDrawer({
             <Section eyebrow="Accessibility / accommodation needs">
               <div className="mt-2 border-l-2 border-ochre bg-[#FDF3E7] px-4 py-4 text-[13px] leading-6 text-umber">
                 {inquiry.accessibilityNeeds}
+              </div>
+            </Section>
+          ) : null}
+
+          {inquiry.replyHistory?.length ? (
+            <Section eyebrow="Reply history">
+              <div className="mt-3 space-y-3">
+                {[...inquiry.replyHistory]
+                  .sort((a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime())
+                  .map((reply) => (
+                    <div
+                      key={reply._key || `${reply.sentAt}-${reply.subject}`}
+                      className="border border-umber/10 bg-linen px-4 py-4"
+                    >
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-[12px] font-semibold text-umber">
+                            {reply.sentBy.name}
+                          </p>
+                          <p className="text-[10px] text-ink/40">
+                            {reply.sentBy.email}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-ink/40">
+                          {formatDateTime(reply.sentAt)}
+                        </p>
+                      </div>
+                      <p className="mt-3 text-[11px] font-medium text-umber">
+                        {reply.subject}
+                      </p>
+                      <p className="mt-2 whitespace-pre-wrap text-[11px] leading-5 text-ink/65">
+                        {reply.message}
+                      </p>
+                      <p className="mt-3 text-[9px] uppercase tracking-widest2 text-ink/35">
+                        Sent from {reply.fromAddress || "company mailbox"}
+                        {reply.archived === false ? " · Sent-folder archive unconfirmed" : ""}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </Section>
           ) : null}

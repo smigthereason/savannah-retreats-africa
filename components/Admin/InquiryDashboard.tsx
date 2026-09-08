@@ -7,6 +7,7 @@ import {
   Menu,
   Search,
   SlidersHorizontal,
+  UserRound,
 } from "lucide-react";
 import {
   INQUIRY_TYPE_META,
@@ -14,6 +15,7 @@ import {
   type InquiryStatus,
   type InquiryType,
 } from "@/lib/admin/types";
+import type { AdminUser } from "@/lib/admin/session";
 import AdminSidebar from "./AdminSidebar";
 import InquiryDetailDrawer from "./InquiryDetailDrawer";
 import {
@@ -43,6 +45,7 @@ const CSV_COLUMNS: (keyof Inquiry)[] = [
   "email",
   "phone",
   "message",
+  "additionalNotes",
   "destination",
   "destinations",
   "experiences",
@@ -193,8 +196,10 @@ function StatsCard({
 
 export default function InquiryDashboard({
   initialInquiries,
+  currentUser,
 }: {
   initialInquiries: Inquiry[];
+  currentUser: AdminUser;
 }) {
   const [inquiries, setInquiries] = useState(initialInquiries);
 
@@ -258,6 +263,7 @@ export default function InquiryDashboard({
           inquiry.email,
           inquiry.phone,
           inquiry.message,
+          inquiry.additionalNotes,
           inquiry.sourcePath,
           inquiry.sourceLabel,
           inquiry.destination,
@@ -343,6 +349,19 @@ export default function InquiryDashboard({
     );
   }
 
+  function recordReplyLocally(id: string, reply: NonNullable<Inquiry["replyHistory"]>[number]) {
+    setInquiries((current) =>
+      current.map((inquiry) =>
+        inquiry._id === id
+          ? {
+              ...inquiry,
+              replyHistory: [...(inquiry.replyHistory || []), reply],
+            }
+          : inquiry,
+      ),
+    );
+  }
+
   const activeContextLabel =
     sourceFilter !== "all"
       ? INQUIRY_TYPE_META[sourceFilter].label
@@ -385,10 +404,17 @@ export default function InquiryDashboard({
               </div>
             </div>
 
-            <div className="hidden items-center gap-2 text-[10px] text-ink/45 sm:flex">
-              <span>{activeContextLabel}</span>
-              <span>·</span>
-              <span>{visible.length} shown</span>
+            <div className="hidden items-center gap-4 sm:flex">
+              <div className="text-right">
+                <p className="text-[10px] font-medium text-umber">{currentUser.name}</p>
+                <p className="mt-0.5 text-[9px] text-ink/40">{currentUser.email}</p>
+              </div>
+              <div
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-umber/10 bg-white text-ochre"
+                title={`Signed in as ${currentUser.email}`}
+              >
+                <UserRound size={16} />
+              </div>
             </div>
           </header>
 
@@ -580,6 +606,7 @@ export default function InquiryDashboard({
         onClose={() => setSelectedId(null)}
         onStatusChange={persistStatus}
         onStatusChangedLocally={updateStatusLocally}
+        onReplyRecorded={recordReplyLocally}
       />
     </section>
   );

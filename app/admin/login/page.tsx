@@ -2,14 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   ArrowRight,
-  Eye,
-  EyeOff,
   ExternalLink,
-  LockKeyhole,
   ShieldCheck,
 } from "lucide-react";
 
@@ -24,49 +21,26 @@ function GoogleMark() {
   );
 }
 
+const ERROR_COPY: Record<string, string> = {
+  config:
+    "Google admin authentication is not configured on the server yet.",
+  unauthorized:
+    "This Google account is not authorized to access the Savannah Retreats admin portal.",
+  state:
+    "The sign-in session could not be verified. Please try again.",
+  google:
+    "Google sign-in could not be completed. Please try again.",
+};
+
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+  const errorCode = searchParams.get("error");
+  const error = errorCode ? ERROR_COPY[errorCode] || ERROR_COPY.google : null;
 
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-    setSubmitting(true);
-
-    try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Incorrect password");
-      }
-
-      const from = searchParams.get("from");
-
-      const redirectTo =
-        from && from.startsWith("/") && !from.startsWith("//")
-          ? from
-          : "/admin";
-
-      router.push(redirectTo);
-      router.refresh();
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  const safeFrom =
+    from && from.startsWith("/") && !from.startsWith("//") ? from : "/admin";
+  const googleHref = `/api/admin/auth/google/start?from=${encodeURIComponent(safeFrom)}`;
 
   return (
     <main className="min-h-screen bg-linen">
@@ -146,94 +120,32 @@ function LoginForm() {
             </h2>
 
             <p className="mt-4 max-w-sm text-[13px] leading-6 text-ink/60">
-              Sign in to review enquiries, respond to travellers and manage the
-              lead pipeline.
+              Sign in with an approved Google account. Every reply sent from
+              the portal remains from the company mailbox and is attributed to
+              the staff member who sent it.
             </p>
 
-            <div className="mt-8">
-              <button
-                type="button"
-                disabled
-                title="Google sign-in will be enabled when individual admin accounts are introduced."
-                className="flex w-full cursor-not-allowed items-center justify-center gap-3 border border-umber/15 bg-white px-4 py-3.5 text-[12px] font-medium text-umber opacity-60"
-              >
-                <GoogleMark />
-                <span>Continue with Google</span>
-                <span className="ml-auto border border-umber/10 bg-sand px-2 py-1 text-[8px] uppercase tracking-widest2 text-ink/45">
-                  Planned
-                </span>
-              </button>
-
-              <div className="my-6 flex items-center gap-4">
-                <div className="h-px flex-1 bg-umber/10" />
-                <span className="text-[9px] uppercase tracking-widest2 text-ink/35">
-                  Current access
-                </span>
-                <div className="h-px flex-1 bg-umber/10" />
+            {error ? (
+              <div className="mt-6 border-l-2 border-red-600 bg-red-50 px-4 py-3 text-[12px] leading-5 text-red-700">
+                {error}
               </div>
+            ) : null}
 
-              <form onSubmit={handleSubmit}>
-                <label className="block">
-                  <span className="text-[10px] font-semibold uppercase tracking-widest2 text-ink/45">
-                    Admin password
-                  </span>
-
-                  <div className="relative mt-2">
-                    <LockKeyhole
-                      size={16}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink/35"
-                    />
-
-                    <input
-                      required
-                      autoComplete="current-password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      placeholder="Enter your password"
-                      className="w-full border border-umber/15 bg-white py-3.5 pl-11 pr-12 text-[13px] text-umber outline-none placeholder:text-ink/30 focus:border-ochre"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((value) => !value)}
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                      className="absolute inset-y-0 right-0 flex items-center px-4 text-ink/40 hover:text-ochre"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={17} />
-                      ) : (
-                        <Eye size={17} />
-                      )}
-                    </button>
-                  </div>
-                </label>
-
-                {error ? (
-                  <div className="mt-4 border-l-2 border-red-600 bg-red-50 px-4 py-3 text-[12px] leading-5 text-red-700">
-                    {error}
-                  </div>
-                ) : null}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="mt-5 flex w-full items-center justify-center gap-3 bg-ochre px-6 py-4 text-[10px] font-semibold uppercase tracking-widest2 text-white transition hover:bg-umber disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {submitting ? "Signing in…" : "Sign in"}
-                  {!submitting ? <ArrowRight size={15} /> : null}
-                </button>
-              </form>
-            </div>
+            <a
+              href={googleHref}
+              className="mt-8 flex w-full items-center justify-center gap-3 border border-umber/15 bg-white px-4 py-4 text-[12px] font-medium text-umber transition hover:border-ochre hover:bg-sand/30"
+            >
+              <GoogleMark />
+              <span>Continue with Google</span>
+              <ArrowRight size={15} className="ml-auto text-ochre" />
+            </a>
 
             <div className="mt-8 border-t border-umber/10 pt-5">
               <p className="text-[10px] leading-5 text-ink/40">
-                Google authentication is intentionally not active yet. The
-                interface is ready for individual admin accounts when the
-                authentication provider is introduced; the current password
-                flow remains unchanged.
+                Access is restricted to email addresses or a Google Workspace
+                domain configured by the site administrator. The shared admin
+                password flow is disabled so replies can always be traced to an
+                individual staff account.
               </p>
             </div>
           </div>
@@ -248,9 +160,7 @@ export default function AdminLoginPage() {
     <Suspense
       fallback={
         <main className="flex min-h-screen items-center justify-center bg-linen">
-          <p className="text-[12px] text-ink/50">
-            Loading secure workspace…
-          </p>
+          <p className="text-[12px] text-ink/50">Loading secure workspace…</p>
         </main>
       }
     >

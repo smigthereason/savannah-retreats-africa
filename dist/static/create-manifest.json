@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-08-27T08:12:05.874Z",
+  "createdAt": "2026-09-07T23:19:13.139Z",
   "studioVersion": "6.2.0",
   "version": 3,
   "workspaces": [
@@ -13,7 +13,7 @@
       },
       "name": "savannahretreatsafrica",
       "projectId": "fpn0roh1",
-      "schema": "d0aa51a2.create-schema.json",
+      "schema": "edabe15c.create-schema.json",
       "title": "Savannah Retreats Africa",
       "tools": "a1fd46b5.create-tools.json"
     }
