@@ -255,6 +255,21 @@ export default function Navbar() {
         aria-label="Navigation menu"
       >
         <nav className="flex flex-1 flex-col overflow-y-auto px-8 pb-6 pt-8">
+          {/* Mobile-only Home route */}
+          <Link
+            href="/"
+            onClick={closeMenu}
+            className="
+              border-b border-umber/10
+              py-4 text-sm font-medium
+              uppercase tracking-widest2
+              text-umber transition-colors
+              hover:text-ochre
+            "
+          >
+            Home
+          </Link>
+
           {navLinks.map((link) => {
             const hasChildren =
               "children" in link &&
